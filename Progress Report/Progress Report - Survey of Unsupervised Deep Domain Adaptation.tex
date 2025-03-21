@@ -1,0 +1,101 @@
+\documentclass[12pt,a4paper,oneside]{book}
+\usepackage[utf8]{inputenc}
+\usepackage[english]{babel}
+\usepackage{lmodern}
+\usepackage{amsmath}
+\usepackage{amssymb}
+\usepackage{amsthm}
+\usepackage{graphicx}
+\usepackage{hyperref}
+\usepackage[top=1in, bottom=1in, left=1in, right=1in]{geometry}
+\usepackage[autostyle]{csquotes}
+\usepackage[font={small}]{caption}
+\usepackage{setspace}
+\usepackage[sorting=none]{biblatex}
+\addbibresource{ref.bib}
+\usepackage{hyperref}
+\hypersetup{
+  colorlinks = true,
+  citecolor = green,
+  urlcolor = blue,
+  pdfauthor = {Your name},
+  pdftitle = {Title},
+  linktocpage
+}
+
+
+
+
+
+
+
+
+
+\newcommand{\rcite}[1]{Ref. \cite{#1}}
+\newcommand{\eqnref}[1]{Eq.~(\ref{#1})}
+\newcommand{\figref}[1]{Fig.~\ref{#1}}
+\newcommand{\sfigref}[2]{Fig.~\hyperref[#1]{\ref{#1}#2}}
+\newcommand{\tabref}[1]{Table~\ref{#1}}
+\newcommand{\secref}[1]{Sec.~\ref{#1}}
+\newcommand{\appref}[1]{Appendix~\ref{#1}}
+
+
+\newcommand{\term}[1]{\left( #1 \right)}
+\newcommand{\abs}[1]{\left| #1 \right|}
+\newcommand{\comm}[1]{\left[ #1 \right]}
+\newcommand{\curly}[1]{\left\{ #1 \right\}}
+\newcommand{\expect}[1]{\left\langle #1 \right\rangle}
+
+
+\title{
+\sc
+% \Huge{Survey of Unsupervised }\\[4pt]
+% \Large{and maybe}\\
+\Huge{Survey of Unsupervised Deep Domain Adaptation Progress Report}
+\\[40pt]
+% \large{A Thesis submitted for the completion of}
+% \\[5pt]
+% \large{requirements for the degree of}
+% \\[15pt]
+% \Large{Bachelor of Technology}
+% \\[5pt]
+% \Large{(Research)}
+% \\[30pt]
+\normalsize{by}
+\\[15pt]
+\large{Pratham Gupta \\
+       Krishna Agarwal}
+\\[15pt]
+% \normalsize{Undergraduate Programme}
+% \\[5pt]
+\normalsize{Indian Institute of Science}
+\\[40pt]
+\includegraphics[scale=0.04]{iisc_logo.jpg}
+\\[40pt]
+% \normalsize{Under the supervision of}
+% \\[10pt]
+% \large{Prof. Your Advisor}\\
+% \normalsize{Your Advisor's Institute} \\[5pt]
+% \large{Prof. Your Proxy}\\
+% \normalsize{Department of Physics, Indian Institute of Science}
+% \newpage
+}
+\author{}
+\date{}
+\begin{document}
+\singlespacing
+\begin{titlepage}
+\maketitle
+\end{titlepage}
+\onehalfspacing
+\frontmatter
+
+
+{\hypersetup{linkcolor=black} \tableofcontents}
+\mainmatter
+ 
+
+
+\chapter{Introduction}
+
+\end{document}
