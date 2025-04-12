@@ -32,6 +32,7 @@
 \usepackage{nicefrac}       % compact symbols for 1/2, etc.
 \usepackage{microtype}      % microtypography
 \usepackage{xcolor}         % colors
+\usepackage{multirow}
 
 
 \title{Unsupervised Domain Adaptation}
@@ -114,7 +115,7 @@ We have used the following datasets for our experiments:
       \textbf{Dataset Category} & \textbf{Datasets} \\
       \midrule
       Computer Vision (Numbers)     & MNIST, MNIST-M, SVHN \\
-      Computer Vision (Categorical) & Office-31, Amazon, DSLR, Webcam \\
+      Computer Vision (Categorical) & Office: Amazon, DSLR, Webcam \\
       Sentiment Analysis (Classification)  & Amazon Review Sentiment \\
       \bottomrule
   \end{tabular}
@@ -122,6 +123,34 @@ We have used the following datasets for our experiments:
 
 
 \section{Experiments}
+\subsection{CORAL and DeepCORAL}
+\subsubsection{CORAL}
+
+\subsubsection{DeepCORAL}
+We have implemented the DeepCORAL algorithm and implemented to observe its performance in domain adaptation using the Office dataset, taking every combination of domains as source and target. The results are shown in Table \ref{tab:deepcoral}. Note that we also compare our results with the results mentioned in the survey paper[]. It is observable that the result for \textbf{W}$\rightarrow$ \textbf{A} is in disagreement with the result in the survey paper by approximately 4\%. The plausible reasons for this discrepancy have been mentioned in the Appendix.
+ 
+\begin{table*}
+  \caption{Classification accuracy (source $\rightarrow$ target) of DeepCORAL on the Office computer vision dataset.}
+  \label{comparePerformance2}
+  \begin{scriptsize}
+  \begin{center}
+  {\renewcommand{\arraystretch}{1.4}
+  \begin{tabular}{@{}l cccccc@{}}
+  \toprule
+  \multicolumn{1}{c}{\multirow{2}{*}{\textbf{Result Source}}} & \multicolumn{6}{c}{\textbf{Office (Amazon, DSLR, Webcam)}} \\
+  \cmidrule{2-7}
+   & \textbf{A $\rightarrow$ W} & \textbf{D $\rightarrow$ W} & \textbf{W $\rightarrow$ D} & \textbf{A $\rightarrow$ D} & \textbf{D $\rightarrow$ A} & \textbf{W $\rightarrow$ A} \\
+  \midrule
+  \textbf{Our Code} & 62.05 & 95.32 & 99.56 & 64.44 & 52.77 & 56.49\\
+  \hline
+  \textbf{Survey Paper} & 66.4$\pm$0.4 & 95.7$\pm$0.3 & 99.2$\pm$0.1 & 66.8$\pm$0.6 & 52.8$\pm$0.2 & 51.5$\pm$0.3\\
+  \bottomrule
+  \end{tabular}
+  }
+  \end{center}
+  \end{scriptsize}
+  \label{tab:deepcoral}
+  \end{table*}
 \section{Conclusion}
 
 \section*{Appendix}
