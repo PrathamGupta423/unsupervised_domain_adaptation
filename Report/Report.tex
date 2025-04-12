@@ -98,7 +98,7 @@ We have implemented the following algorithms for our experiments:
 \begin{itemize}
   \item \textbf{MMD (Maximum Mean Discrepancy)}[]: A metric that quantifies non-alignment between the source and target distributions. It is used as a loss function and in validating models. 
   \item \textbf{CORAL (Correlation Alignment), DeepCORAL}[][]: CORAL aligns the second-order statistics (covariances) of source and target features. Accordingly, DeepCORAL is an extension of CORAL that integrates correlation alignment into deep neural networks.
-  \item \textbf{DANN (Domain-Adversarial Neural Network)}[]: Uses adversarial training to learn domain-invariant features. 
+  \item \textbf{DANN (Domain-Adversarial Neural Network)}[]: Trains the model in an adversarial manner to learn the domain invariant features using a gradient reversal layer and a DNN.
   \item \textbf{DSN (Domain Separation Network)}[]: Separates domain-specific and domain-invariant features for better adaptation. A state of the art method for domain invariant feature learning.
   \item \textbf{ATT (Adversarial Training with Triplet loss)}[]:An ensemble method that utilize two classifier trained on source domain to pseudo-label target domain to learn a classifier for it.
 \end{itemize}
@@ -114,7 +114,7 @@ We have used the following datasets for our experiments:
       \textbf{Dataset Category} & \textbf{Datasets} \\
       \midrule
       Computer Vision (Numbers)     & MNIST, MNIST-M, SVHN \\
-      Computer Vision (Categorical) & Office31, Amazon, DSLR, Webcam \\
+      Computer Vision (Categorical) & Office-31, Amazon, DSLR, Webcam \\
       Sentiment Analysis (Classification)  & Amazon Review Sentiment \\
       \bottomrule
   \end{tabular}
