@@ -7,7 +7,7 @@
 
 
 % ready for submission
-\usepackage[preprint]{neurips_2023}
+\usepackage[]{neurips_2023}
 
 
 % to compile a preprint version, e.g., for submission to arXiv, add add the
@@ -101,15 +101,15 @@ We have reproduced the results of these key papers [] in this research area of m
 \subsection{Algorithms}
 We have implemented the following algorithms for our experiments:
 \begin{itemize}
-  \item \textbf{MMD (Maximum Mean Discrepancy)}[]: A metric that quantifies non-alignment between the source and target distributions. It is used as a loss function and in validating models. 
-  \item \textbf{CORAL (Correlation Alignment), DeepCORAL}[][]: CORAL aligns the second-order statistics (covariances) of source and target features. Accordingly, DeepCORAL is an extension of CORAL that integrates correlation alignment into deep neural networks.
   \item \textbf{DANN (Domain-Adversarial Neural Network)}[]: Trains the model in an adversarial manner to learn the domain invariant features using a gradient reversal layer and a DNN.
+  \item \textbf{CORAL (Correlation Alignment), DeepCORAL}[][]: CORAL aligns the second-order statistics (covariances) of source and target features. Accordingly, DeepCORAL is an extension of CORAL that integrates correlation alignment into deep neural networks.
+  \item \textbf{MMD (Maximum Mean Discrepancy)}[]: A metric that quantifies non-alignment between the source and target distributions. It is used as a loss function and in validating models. 
   \item \textbf{DSN (Domain Separation Network)}[]: Separates domain-specific and domain-invariant features for better adaptation. A state of the art method for domain invariant feature learning.
   \item \textbf{ATT (Adversarial Training with Triplet loss)}[]:An ensemble method that utilize two classifier trained on source domain to pseudo-label target domain to learn a classifier for it.
 \end{itemize}
 
 \subsection{Datasets}
-We have used the following datasets for our experiments:
+We have used the following datasets\ref{tab:datasets} for our experiments:
 \begin{table}[h]
   \centering
   \caption{Benchmark datasets used in our experiments.}
@@ -131,7 +131,7 @@ We have used the following datasets for our experiments:
 \subsubsection{CORAL}
 
 \subsubsection{DeepCORAL}
-We have implemented the DeepCORAL algorithm and implemented to observe its performance in domain adaptation using the Office dataset, taking every combination of domains as source and target. The results are shown in Table \ref{tab:deepcoral}. Note that we also compare our results with the results mentioned in the survey paper[]. It is observable that the result for \textbf{W}$\rightarrow$ \textbf{A} is in disagreement with the result in the survey paper by approximately 4\%. The plausible reasons for this discrepancy have been mentioned in the Appendix.
+We have implemented the DeepCORAL algorithm and observed its performance in domain adaptation using the Office dataset, taking every combination of domains as source and target. The results are shown in Table \ref{tab:deepcoral}. Note that we also compare our results with the results mentioned in the survey paper[]. It is observable that the result for \textbf{W}$\rightarrow$ \textbf{A} is in disagreement with the result in the survey paper by approximately 4\%. The plausible reasons for this discrepancy have been mentioned in the Appendix.
  
 \begin{table*}
   \caption{Classification accuracy (source $\rightarrow$ target) of DeepCORAL on the Office computer vision dataset.}
@@ -154,12 +154,43 @@ We have implemented the DeepCORAL algorithm and implemented to observe its perfo
   \end{center}
   \end{scriptsize}
   \label{tab:deepcoral}
-  \end{table*}
+\end{table*}
+
+\subsection{Maximum Mean Discrepancy}
+Similar to DeepCORAL, we also experimented by taking MMD as our divergence metric. We have used synthetic dataset to test the performance of MMD and it showed good good ability to adapt as shown in figure \ref{fig:mmd}. We empirically verified MMD's ability to distinguish between different distributions \ref{fig:mmd_power}. By testing on synthetically generated data\ref{fig:mmd_example}. 
+
+\begin{figure}
+  \centering
+  \begin{minipage}{0.3\textwidth}
+    \centering
+    \includegraphics[width=\textwidth]{MMD/adaptation.png}
+    \caption{Plot of desicion boundary of DNN trained with MMD loss. The decision boundary is shown for the source domain (dots) and target domain (cross).}
+    \label{fig:mmd}
+  \end{minipage}
+  \hfill
+  \begin{minipage}{0.35\textwidth}
+    \centering
+    \includegraphics[width=\textwidth]{MMD/Test_powe_vs_eps.png}
+    \caption{MMD: Test power vs epsilon shows how well MMD can distinguish between distributions vs how much they differ.}
+    \label{fig:mmd_power}
+  \end{minipage}
+  \hfill
+  \begin{minipage}{0.25\textwidth}
+    \centering
+    \includegraphics[width=\textwidth]{MMD/Example.png}
+    \caption{Example of synthetic dataset, where P is Isotropic Gaussian while Q is elliptical.}
+    \label{fig:mmd_example}
+  \end{minipage}
+  
+
+\end{figure}
+
+
+
+
 \subsection{Asymmetric Tri-training for Unsupervised Domain Adaptation}
-\textbf{Concept:} This is an ensemble model approach to the problem of UDA. Here We utilize a feature extractor \(F\) and three classifiers \(F_1,F_2,F_t\)
-.\(F_1,F_2\) are trained on the source domain with both labelled data and regularization. The third classifier \(F_t\) is trained on the target domain with pseudo-labels generated by the first two classifiers. We also want \(F_1,F_2\) to be diverse, so a multi-view loss measure between classifiers. \\
-\textbf{Results:} We implemented the algorithm from scratch and reproduced following results:
-\begin{table}[h]
+We have Implement Asymmetric Tri-Training Algorithm and Tested it on MNIST and SVHN datasets. Results are shown in Table \ref{tab:att_results}. The results are comparable to the results mentioned in the paper. We have also compared our implementation with the implementation of the paper. The results are shown in Table \ref{tab:att_results}. It is observable that our implementation closely matched for training without batch normalization but other experiments then match the implementation of the paper. The plausible reasons for this discrepancy have been mentioned in the Appendix.
+\begin{table}
   \centering
   \caption{Results of ATT on MNIST and SVHN Domain Adaptation.}
   \label{tab:att_results}
@@ -186,8 +217,9 @@ We have implemented the DeepCORAL algorithm and implemented to observe its perfo
 %   \label{fig:att_architecture}
 % \end{figure}
 
-\subsection{Maximum Mean Discrepancy}
-We implemented the MMD algorithm and tested its effectiveness as a test statistic using sysnthetically generated data. The results closely matched the conclusions of the paper. 
+
+
+
 
 
 
