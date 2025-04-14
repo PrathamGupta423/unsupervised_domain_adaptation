@@ -40,6 +40,10 @@
 \usepackage{amsmath}
 \usepackage{amssymb}
 \usepackage{amsthm}
+\usepackage{enumitem}
+\usepackage{bm}
+% \usepackage{titlesec}
+\usepackage{geometry}   
 
 % Images folder
 
@@ -380,11 +384,173 @@ We implemented the Asymmetric Tri-Training algorithm and tested it on MNIST and 
 
 
 \section{Conclusion}
-
 In this report, we explored and implemented several state-of-the-art unsupervised domain adaptation algorithms across diverse datasets. Our results largely align with those reported in original works, validating both the effectiveness of these methods and our understanding of the underlying principles. This study highlights the importance of domain-invariant representations and provides a foundation for further research in robust model generalization across domains.
+
 
 \newpage
 \section*{Appendix}
+
+
+\subsection{Introduction}
+
+In many machine learning applications, a common issue arises when the distribution of the training data (source domain) differs from the test data (target domain). This phenomenon, known as domain shift, can severely degrade model performance. 
+
+\textbf{Domain adaptation} is a subfield of transfer learning that aims to tackle this problem. Specifically, we will be dealing with Unsupervised domain adaptation and will have access to:
+\begin{itemize}[noitemsep]
+    \item A labeled source domain \( \mathcal{D}_S \) with distribution \( P_S(X, Y) \),
+    \item An unlabeled target domain \( \mathcal{D}_T \) with distribution \( P_T(X, Y) \),
+\end{itemize}
+where \( P_S(X) \neq P_T(X) \). The goal is to learn a model that performs well on \( \mathcal{D}_T \), using labels only from \( \mathcal{D}_S \).
+
+% \section{Domain Adaptation Theory}
+
+% Ben-David et al. (2006, 2010) proposed a generalization bound that directly motivates the DANN framework.
+
+% \subsection{Generalization Bound}
+
+% Let \( h \in \mathcal{H} \) be a hypothesis and let \( \epsilon_T(h) \) and \( \epsilon_S(h) \) be the expected classification errors on target and source domains respectively. Then:
+
+% \begin{equation}
+% \epsilon_T(h) \leq \epsilon_S(h) + \frac{1}{2} d_{\mathcal{H}\Delta\mathcal{H}}(\mathcal{D}_S, \mathcal{D}_T) + \lambda,
+% \label{eq:gen-bound}
+% \end{equation}
+
+% where:
+% \begin{itemize}[noitemsep]
+%     \item \( d_{\mathcal{H}\Delta\mathcal{H}} \) is the symmetric difference hypothesis divergence.
+%     \item \( \lambda = \min_{h \in \mathcal{H}} \left[ \epsilon_S(h) + \epsilon_T(h) \right] \).
+% \end{itemize}
+
+% This bound suggests that to achieve good performance on the target domain, one should:
+% \begin{enumerate}[label=(\alph*)]
+%     \item Minimize the source risk \( \epsilon_S(h) \),
+%     \item Minimize the divergence between the domains.
+% \end{enumerate}
+
+\subsection{H-Divergence and Proxy A-Distance}
+
+To measure distance between domain, we need a metric. And $\mathcal{H}$-Divergence due to its easy to estimate from emperical data is best choice for this metric,
+
+\subsubsection{H-Divergence}
+
+Let \( \mathcal{H} \) be a hypothesis class of binary classifiers. The H-divergence between two marginal distributions \( \mathcal{D}_S^X \) and \( \mathcal{D}_T^X \) is defined as:
+
+\begin{equation}
+d_{\mathcal{H}}(\mathcal{D}_S^X, \mathcal{D}_T^X) = 2 \sup_{h \in \mathcal{H}} \left| \Pr_{x \sim \mathcal{D}_S^X}[h(x) = 1] - \Pr_{x \sim \mathcal{D}_T^X}[h(x) = 1] \right|.
+\end{equation}
+
+For a symmetric hypothesis class ( by symmeric, we mean if $n$ is a classifier in hypothesis class then $1 - n$ is also there in hypothesis class)$\mathcal{H}$, one can compute the \textit{empirical} $\mathcal{H}$-\textit{divergence} between two samples $S \sim (\mathcal{D}_S^X)^n$ and $T \sim (\mathcal{D}_T^X)^{n'}$ by computing
+
+\begin{equation}
+\hat{d}_{\mathcal{H}}(S, T) = 2 \left( 1 - \min_{\eta \in \mathcal{H}} \left[ \frac{1}{n} \sum_{i=1}^{n} \mathbb{I}\left[\eta(x_i) = 0\right] + \frac{1}{n'} \sum_{i=n+1}^{N} \mathbb{I}\left[\eta(x_i) = 1\right] \right] \right),
+\end{equation}
+
+\subsubsection{Proxy A-Distance (PAD)}
+
+Since computing even the emperical H-divergence exactly is difficult, it can be estimated via the \textbf{Proxy A-distance}:
+
+\begin{equation}
+\hat{d_A} = 2(1 - 2\epsilon),
+\end{equation}
+where \( \epsilon \) is the generalization error of a classifier trained to distinguish source from target domain samples.
+\\
+We will furthur see in discussion of "Atheory of learning from different domains" paper that this emperical bound for $\mathcal{H}$-Divergence converges to actual value as number of datapoints increases.
+
+Based on this theory, we will now introduce DANN architecture.
+
+
+
+\subsection{Domain-Adversarial Neural Network (DANN)}
+
+DANN incorporates a domain classifier into a neural network and trains the feature extractor to predict Domain invariant features by continuous feedback(in terms of gradient) by gradient reversal layer and simultaneously train on source dataset to learn actual labels.
+
+\subsubsection{Architecture}
+
+The DANN consists of three components:
+\begin{enumerate}[noitemsep]
+    \item A feature extractor \( G_f(x; \theta_f) \),
+    \item A label predictor \( G_y(G_f(x); \theta_y) \),
+    \item A domain classifier \( G_d(G_f(x); \theta_d) \).
+\end{enumerate}
+
+\begin{center}
+\includegraphics[width=0.8\textwidth]{DANN/DANN_img.png}
+\end{center}
+
+\textbf{Optimization Objective}
+
+We define a joint loss:
+
+\begin{align}
+E(\theta_f, \theta_y, \theta_d) &= \frac{1}{n} \sum_{i=1}^{n} \mathcal{L}_y(G_y(G_f(x_i^s)), y_i^s) \nonumber \\
+&\quad - \lambda \left( \frac{1}{n} \sum_{i=1}^{n} \mathcal{L}_d(G_d(G_f(x_i^s)), 0) + \frac{1}{m} \sum_{j=1}^{m} \mathcal{L}_d(G_d(G_f(x_j^t)), 1) \right).
+\label{eq:objective}
+\end{align}
+
+This results in a saddle point problem:
+\begin{align}
+(\hat{\theta}_f, \hat{\theta}_y) &= \arg \min_{\theta_f, \theta_y} E(\theta_f, \theta_y, \hat{\theta}_d), \\
+\hat{\theta}_d &= \arg \max_{\theta_d} E(\hat{\theta}_f, \hat{\theta}_y, \theta_d).
+\end{align}
+
+The first update is to learn domain invariant features and the required classifier whereas the second update is to learn domain classifier.
+
+\textbf{Gradient Updates}
+
+Using stochastic gradient descent, the updates are:
+
+\begin{align}
+\theta_f &\leftarrow \theta_f - \mu \left( \frac{\partial \mathcal{L}_y}{\partial \theta_f} - \lambda \frac{\partial \mathcal{L}_d}{\partial \theta_f} \right), \\
+\theta_y &\leftarrow \theta_y - \mu \frac{\partial \mathcal{L}_y}{\partial \theta_y}, \\
+\theta_d &\leftarrow \theta_d - \mu \lambda \frac{\partial \mathcal{L}_d}{\partial \theta_d}.
+\end{align}
+
+\subsubsection{Gradient Reversal Layer Working}
+
+To simplify implementation, the adversarial optimization is performed via a custom layer called the Gradient Reversal Layer (GRL).
+
+\subsubsubsection{Definition}
+
+Let \( R(x) \) denote the GRL. It has the following behavior:
+\begin{align}
+\text{Forward pass:} \quad &R(x) = x, \\
+\text{Backward pass:} \quad &\frac{dR}{dx} = -\lambda I.
+\end{align}
+
+During backpropagation, GRL multiplies the gradient by \(-\lambda\), reversing the gradient direction and forcing the feature extractor to generate domain-invariant features.
+
+\subsubsection{Theoretical Implications}
+
+DANN effectively minimizes the upper bound of Target Error which we will discuss while discussing "Atheory of learning from different domains" paper. Through the adversarial training:
+\begin{itemize}[noitemsep]
+    \item The source classification loss \( \epsilon_S \) is minimized.
+    \item The domain classifier's inability to distinguish domains implies low \( d_{\mathcal{H}\Delta\mathcal{H}} \).
+\end{itemize}
+
+Thus, under the assumption of low \( \lambda \), DANN is expected to generalize well on the target domain.
+
+
+\subsubsection{Struggle Through Experiments}
+Most of the experiment are giving a good results with result quite close to the results in paper yet there is an experiment for which we tried a lot but not giving acceptable results,\\
+In experiments with Deep Image Descriptors for Re-Identification, We tried to adapt to ViPER dataset with source dataset as PRiM dataset. The basic task of the experiment is to learn the matching between images taken by differnt cameras through different angles, diferent times of day etc.
+for that we try to learn an embedding of images and then calculated the cosine similarities between images to capture how related are they and then compared with matrix of size $n*n$ where n is batch size where $(i,j)^{th}$ element of this matrix is 1 iff that image is of same person.
+Now, we used Binomial Deviance Loss, To capture the loss corresponding to distance between Those two matrices described above.Also we are using Cross-Entropy Loss to capture the domain classification part of it and then applying backpropagation to learn parameters.\\
+But on designing such architechure, and running on our dataset we observed that domain classification loss is not getting updated after certain number of steps. We thoutght of this problem being caused due to Relu activation function due to its zero grad on negative side. So we replaced Relu with Tanh activation function but still it was not updating domain loss that often, Then we decided to increase the number of layer and change hyperparameters, but still the results were not that good so we then go for fully connected layer instead of splitting it into two parts. We also tried changing the loss function but not able to get good results.
+
+\subsubsection{Successful Experiments}
+First successful experiment performed in DANN paper was the half moon experiment where we created dummy dataset of labelled points as shown(??) and then unlabelled target domain rotated by an angle of $35\deg$ . We calculated the results for both DANN and normal NN architecture. Observing the label classification graph of both experiments, we can say that classification boundary of labels for DANN more or less also capturing the structure of Target dataset. Similarly consider the PCA representation of hidden layer, in case of DANN target and source representation we embedded within each other quite well as compared to DNN were all black dots tend to remain in small cluster near boundaries of source representation. That shows the Domain Invariant features being learnt by DANN architecture. Similar conclusions can be drawn with domain classification images.
+\\
+Second we performed Sentiment analysis task on Amazon review dataset which is having domains as:
+books, dvd, electronics, kitchen\\
+We performed Domain adaptation task on each possible piar with 1000 epochs and compared its results with DNN and SVM. The final conclusion was that on most of the domain transfers DANN was performing better as compared to Other two algorithms.\\
+Corresponding table can be seen here(??).
+\\ 
+Next we performed the domain adaptation taskfrom MNIST dataset to MNIST-M dataset and got expected results.
+
+\subsubsection{Conclusion}
+
+The DANN framework stands as a principled and practical method for unsupervised domain adaptation. Grounded in domain adaptation theory, it achieves the minimization of target error by aligning feature distributions through adversarial training. The elegance of DANN lies in its simplicity and the minimal architectural modifications required to integrate domain adaptation directly into a standard feed-forward neural network.
+
 
 \subsection*{Maximum Mean Discrepancy}
 \subsubsection*{Theory}
