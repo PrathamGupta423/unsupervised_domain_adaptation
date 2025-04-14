@@ -94,18 +94,18 @@
 
 
 \section{Introduction}
-Unsupervised Domain Adaptation (UDA) addresses the challenge of training models on a labelled source domain and adapting them to an unlabeled target domain with a different data distribution. In this report, we explore state-of-the-art UDA techniques and their applications in areas such as computer vision and natural language processing. We also reproduce results from influential works [\cite{ganin2016domainadversarialtrainingneuralnetworks}, \cite{survey} , \cite{Ben-David2010}] to deepen our understanding of this field.
+Unsupervised Domain Adaptation (UDA) addresses the challenge of training models on a labelled source domain and adapting them to an unlabeled target domain with a different data distribution. In this report, we explore state-of-the-art UDA techniques and their applications in areas such as computer vision and natural language processing. We also reproduce results from influential works \cite{ganin2016domainadversarialtrainingneuralnetworks,survey,Ben-David2010} to deepen our understanding of this field.
 
 \section{Methodology}
 
 \subsection{Algorithms}
 We have implemented the following algorithms for our experiments:
 \begin{itemize}
-  \item \textbf{DANN (Domain-Adversarial Neural Network)}[\cite{ganin2016domainadversarialtrainingneuralnetworks}]: Trains the model in an adversarial manner to learn the domain invariant features using a gradient reversal layer and a DNN.
-  \item \textbf{CORAL (Correlation Alignment), DeepCORAL}[\cite{Coral},\cite{DeepCoral}]: CORAL aligns the second-order statistics (covariances) of source and target features. Accordingly, DeepCORAL is an extension of CORAL that integrates correlation alignment into deep neural networks.
-  \item \textbf{MMD (Maximum Mean Discrepancy)}[\cite{sutherland2017generative}]: A metric that quantifies non-alignment between the source and target distributions. It can be used as a loss function for DNNs.
-  \item \textbf{DSN (Domain Separation Network)}[\cite{DSN}]: Separates domain-specific and domain-invariant features for better adaptation. A state of the art method for domain invariant feature learning.
-  \item \textbf{ATT (Adversarial Training with Triplet loss)}[\cite{pmlr-v70-saito17a}]:An ensemble method that utilize two classifier trained on source domain to pseudo-label target domain to learn a classifier for it.
+  \item \textbf{DANN (Domain-Adversarial Neural Network)}\cite{ganin2016domainadversarialtrainingneuralnetworks}: Trains the model in an adversarial manner to learn the domain invariant features using a gradient reversal layer and a DNN.
+  \item \textbf{CORAL (Correlation Alignment), DeepCORAL}\cite{Coral,DeepCoral}: CORAL aligns the second-order statistics (covariances) of source and target features. Accordingly, DeepCORAL is an extension of CORAL that integrates correlation alignment into deep neural networks.
+  \item \textbf{MMD (Maximum Mean Discrepancy)}\cite{sutherland2017generative}: A metric that quantifies non-alignment between the source and target distributions. It can be used as a loss function for DNNs.
+  \item \textbf{DSN (Domain Separation Network)}\cite{DSN}: Separates domain-specific and domain-invariant features for better adaptation. A state of the art method for domain invariant feature learning.
+  \item \textbf{ATT (Adversarial Training with Triplet loss)}\cite{pmlr-v70-saito17a}:An ensemble method that utilize two classifier trained on source domain to pseudo-label target domain to learn a classifier for it.
 \end{itemize}
 
 \subsection{Datasets}
@@ -173,7 +173,7 @@ We have implemented the DeepCORAL algorithm and observed its performance on the 
 \end{table*}
 
 \subsection{Maximum Mean Discrepancy}
-Similar to DeepCORAL, we also experimented by taking MMD as our divergence metric. We have used synthetic dataset to test the performance of MMD and it showed good good ability to adapt as shown in figure \ref{fig:mmd}. We empirically verified MMD's ability to distinguish between different distributions \ref{fig:mmd_power}. By testing on synthetically generated data\ref{fig:mmd_example}. 
+Similar to DeepCORAL\cite{DeepCoral}, We experimented with MMD as the divergence metric. We using synthetic datasets and MMD showed strong adaptation ability (Fig \ref{fig:mmd}). It was also effective in  distinguishing between distributions (Figs \ref{fig:mmd_power}, \ref{fig:mmd_example}).
 
 \begin{figure}
   \centering
