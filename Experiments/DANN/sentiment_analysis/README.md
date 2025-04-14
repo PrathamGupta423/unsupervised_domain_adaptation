@@ -1,0 +1,1 @@
+In sentiment.py, appropriately replace the paths for the books, electronics, dvd and kitchen datasets.
