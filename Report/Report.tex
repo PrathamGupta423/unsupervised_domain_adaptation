@@ -110,7 +110,7 @@ We have implemented the following algorithms for our experiments:
 
 \subsection{Datasets}
 We have used the following datasets\ref{tab:datasets} for our experiments:
-\begin{table}[h]
+\begin{table}
   \centering
   \caption{Benchmark datasets used in our experiments.}
   \label{tab:datasets}
@@ -130,7 +130,7 @@ We have used the following datasets\ref{tab:datasets} for our experiments:
 \subsection{CORAL and DeepCORAL}
 \subsubsection{CORAL}
 CORAL was implemented and tested for basic robustness by synthetic linearly separable random Gaussian datasets with same and different covariances. Results are reported in table\ref{tab:coral}.
-\begin{table}[h]
+\begin{table}
   \centering
   \caption{Performance of CORAL on synthetic datasets. Averaged over 100 iterations.}
   \label{tab:coral}
@@ -282,51 +282,66 @@ We implemented the Asymmetric Tri-Training algorithm and tested it on MNIST and 
   \end{tabular}
 \end{table}
 
+
 \subsection{Results using DANN Architecture}
-We have implemented the DANN architecture and tested it on a dummy half- moon dataset and compared the results with Normal DNN on various parameters.\\
+We have implemented the DANN architecture and tested it on a dummy half- moon dataset and compared the results with Normal DNN on various parameters
 Here are the results of the experiments:
-\footnotesize
-\centering
 
 % --------- First Row: Standard NN -----------
-\begin{minipage}{0.8\linewidth}
+\begin{figure}
 \centering
-% \begin{adjustbox}{max width=\textwidth}
-\begin{tabular}{ccc}
-\includegraphics[width=0.3\textwidth]{DANN/label_decision_vanilla.png} &
-\includegraphics[width=0.3\textwidth]{DANN/feature_vanilla.png} &
-\includegraphics[width=0.3\textwidth]{DANN/domain_deciison_vanilla.png} \\
-\small Label Classification & \small Representation PCA & \small Domain Classification
-\end{tabular}
-% \end{adjustbox}
+\begin{minipage}{0.32\linewidth}
+\centering
+\includegraphics[width=0.7\linewidth]{DANN/label_decision_vanilla.png}
+\caption{\small Label Classification}
+\label{fig:label_decision_vanilla}
 \end{minipage}
-
-\vspace{0.0 cm}
+\hfill
+\begin{minipage}{0.32\linewidth}
 \centering
-\small\textbf{(a)} Standard NN.
-
-\vspace{0.8cm}
-
-% --------- Second Row: DANN -----------
-\begin{minipage}{0.8\linewidth}
-\centering
-% \begin{adjustbox}{max width=\textwidth}
-\begin{tabular}{ccc}
-\includegraphics[width=0.3\textwidth]{DANN/label_decision_dann.png} &
-\includegraphics[width=0.3\textwidth]{DANN/feature_dann.png} &
-\includegraphics[width=0.3\textwidth]{DANN/domain_decision_dann.png} \\
-\small Label Classification & \small Representation PCA & \small Domain Classification
-\end{tabular}
-% \end{adjustbox}
+\includegraphics[width=0.7\linewidth]{DANN/feature_vanilla.png}
+\caption{\small PCA of hidden layer}
+\label{fig:feature_vanilla}
 \end{minipage}
-
-\vspace{0.3cm}
+\hfill
+\begin{minipage}{0.32\linewidth}
 \centering
-\small\textbf{(b)} DANN
+\includegraphics[width=0.55\linewidth]{DANN/domain_deciison_vanilla.png}
+\caption{\small Domain Classification}
+\label{fig:domain_decision_vanilla}
+\end{minipage}
+\caption{\small Results for Standard NN}
+\end{figure}
 
-Here, it is easy to see that Label classification for DANN is worse as compared to DNN which shows the features learned by DANN are mare Domain Invariant.Similar conclusions can be drawn from other 2 figures as well.For more details, refer Appendix. \\
+\begin{figure}
+\centering
+\begin{minipage}{0.32\linewidth}
+\centering
+\includegraphics[width=0.7\linewidth]{DANN/label_decision_dann.png}
+\caption{\small Label Classification}
+\label{fig:label_decision_dann}
+\end{minipage}
+\hfill
+\begin{minipage}{0.32\linewidth}
+\centering
+\includegraphics[width=0.7\linewidth]{DANN/feature_dann.png}
+\caption{\small PCA of hidden layer}
+\label{fig:feature_dann}
+\end{minipage}
+\hfill
+\begin{minipage}{0.32\linewidth}
+\centering
+\includegraphics[width=0.55\linewidth]{DANN/domain_decision_dann.png}
+\caption{\small Domain Classification}
+\label{fig:domain_decision_dann}
+\end{minipage}
+\caption{\small Results for DANN}
+\end{figure}
+
+
+Here, it is easy to see that Label classification for DANN is worse as compared to DNN which shows the features learned by DANN are mare Domain Invariant.Similar conclusions can be drawn from other 2 figures as well. For more details, refer Appendix.
 Second we performed Experiment on Amazon Reviews dataset. We used the same architecture as in the paper and trained it for 1000 epochs. The results are comparable to the results mentioned in the paper(within cap of $5\%$ difference) and in general DANN is performing a little better than the other methods. The results of accuracy on test dataset are shown in Table:
-\begin{table}[H]
+\begin{table}
   \centering
   % \begin{adjustbox}{max width=\textwidth}
   \begin{tabular}{|c|c|c|c|c|c|c|c|}
@@ -348,7 +363,7 @@ Second we performed Experiment on Amazon Reviews dataset. We used the same archi
   % \end{adjustbox}
   \caption{Results of DANN, NN, SVM on Amazon Review Dataset compared with paper results.}
   \label{tab:sample_table}
-  \end{table}
+\end{table}
 
 
 
@@ -476,7 +491,7 @@ The loss function for Target domain training is the cross-entropy loss:
   \mathcal{L}(\theta_F, \theta_{F_t}) = \mathcal{L}_{CE}(F_t(x_t), \hat{y}_t)
 \]
 
-\begin{figure}[h]
+\begin{figure}
   \centering
   \includegraphics[width=0.8\textwidth]{ATT/ATT_Architecture.png}
   \caption{ATT Architecture: The feature extractor F processes inputs from both domains. F1 and F2 are source-trained classifiers that generate pseudo-labels for training Ft on the target domain.}
@@ -484,7 +499,7 @@ The loss function for Target domain training is the cross-entropy loss:
 \end{figure}
 
 \subsubsection*{Pseudocode}
-\begin{algorithm}[H]
+\begin{algorithm}
 \caption{Asymmetric Tri-training}
 \begin{algorithmic}[1]
 \STATE \textbf{Input:} Source data $X_s = \{(x_i, t_i)\}_{i=1}^m$, Target data $X_t = \{(x_j)\}_{j=1}^n$
