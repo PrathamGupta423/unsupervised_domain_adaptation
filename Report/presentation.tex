@@ -95,22 +95,22 @@
 % \end{itemize}
 % \end{frame}
 
-% % Slide 3 - H-Divergence
-% \begin{frame}{$\mathcal{H}$-Divergence}
-% \[
-% d_{\mathcal{H}}(\mathcal{D}_S^X, \mathcal{D}_T^X) = 2 \sup_{\eta \in \mathcal{H}} \left| \Pr_{x \sim \mathcal{D}_S^X}[\eta(x)=1] - \Pr_{x \sim \mathcal{D}_T^X}[\eta(x)=1] \right|
-% \]
+% Slide 3 - H-Divergence
+\begin{frame}{$\mathcal{H}$-Divergence}
+\[
+d_{\mathcal{H}}(\mathcal{D}_S^X, \mathcal{D}_T^X) = 2 \sup_{\eta \in \mathcal{H}} \left| \Pr_{x \sim \mathcal{D}_S^X}[\eta(x)=1] - \Pr_{x \sim \mathcal{D}_T^X}[\eta(x)=1] \right|
+\]
 
-% \begin{itemize}
-%     \item Measures the ability of a hypothesis $\eta \in \mathcal{H}$ to distinguish between source and target distributions.
-%     \item High $d_{\mathcal{H}}$ implies easy domain discrimination — bad for transfer.
-%     \item For symmetric hypothesis classes, it can be estimated via:
-%     \[
-%     \hat{d}_A = 2 (1 - 2\epsilon)
-%     \]
-%     \item Here, $\epsilon$ is the generalization error of a domain classifier.
-% \end{itemize}
-% \end{frame}
+\begin{itemize}
+    \item Measures the ability of a hypothesis $\eta \in \mathcal{H}$ to distinguish between source and target distributions.
+    \item High $d_{\mathcal{H}}$ implies easy domain discrimination — bad for transfer.
+    \item For symmetric hypothesis classes, it can be estimated via:
+    \[
+    \hat{d}_A = 2 (1 - 2\epsilon)
+    \]
+    \item Here, $\epsilon$ is the generalization error of a domain classifier.
+\end{itemize}
+\end{frame}
 
 % Slide 4 - DANN Architecture
 \begin{frame}{DANN Architecture}
@@ -121,12 +121,7 @@
 \end{figure}
 \end{frame}
 
-\begin{frame}
-    \frametitle{DANN}
-    
-    
 
-\end{frame}
 
 % Slide 5 - Key Idea
 \begin{frame}{DANN: Key Idea}
@@ -327,29 +322,263 @@ The structure of source and target distributions is shown below:
 
 % \end{frame}
 
+\begin{frame}{Domain Adaptation on Amazon review Datasets}
+    \begin{table}[h!]
+    \centering
+    \begin{adjustbox}{max width=\textwidth}
+    \begin{tabular}{|c|c|c|c|c|c|c|c|}
+    \hline
+    Source & Target & DANN & NN & SVM & DANN(p) & NN(p) & SVM(p) \\ \hline
+    books & dvd & \textbf{72.8}\% & \textbf{72.8}\% & 71.95\% & 78.4\% & 79.0\% & \textbf{79.9}\% \\ \hline
+    books & electronics & \textbf{70.9}\% & 69.5\% & 69.5\% & 73.3\% & 74.7\% & \textbf{74.8}\% \\ \hline
+    books & kitchen & \textbf{71.85}\% & \textbf{71.85}\% & 71.7\% & \textbf{77.9}\% & 77.8\% & 76.9\% \\ \hline
+    dvd & books & \textbf{71.55}\% & 66.9\% & 69\% & 72.3\% & 72.0\% & \textbf{74.3}\% \\ \hline
+    dvd & electronics & \textbf{69.8}\% & 69\% & 66.63\% & \textbf{75.4}\% & 73.2\% & 74.8\% \\ \hline
+    dvd & kitchen & \textbf{70.05}\% & 67.25\% & 69.5\% & \textbf{78.3}\% & 77.8\% & 74.6\% \\ \hline
+    electronics & books & \textbf{65.95}\% & 63.8\% & 65.45\% & \textbf{71.3}\% & 70.9\% & 70.5\% \\ \hline
+    electronics & dvd & \textbf{68.05}\% & 67.15\% & 67\% & \textbf{73.8}\% & 73.3\% & 72.6\% \\ \hline
+    electronics & kitchen & \textbf{79.25}\% & 78.45\% & 78.75\% & \textbf{85.4}\% & \textbf{85.4}\% & 84.7\% \\ \hline
+    kitchen & book & 68.25\% & \textbf{68.75}\% & 68.05\% & \textbf{70.9}\% & 70.8\% & 70.7\% \\ \hline
+    kitchen & dvd & \textbf{68.90}\% & 65.15\% & 68.5\% & \textbf{74.0}\% & 73.9\% & 73.6\% \\ \hline
+    kitchen & electronics & 78.75\% & 77.4\% & \textbf{79.25}\% & \textbf{84.3}\% & 84.1\% & 84.2\% \\ \hline
+    \end{tabular}
+    \end{adjustbox}
+    \caption{Results of DANN, NN, SVM on Amazon Review Dataset compared with paper results.}
+    \label{tab:sample_table}
+    \end{table}
+        
+
+\end{frame}
+
+
+\section{Survey of Other Methods of UDA}
+
+\subsection{Maximum Mean Discrepancy (MMD)}
 \begin{frame}
-    \frametitle{Ensemble Methods}
+    \frametitle{Maximum Mean Discrepancy}
+    \textbf{Concept:} MMD is a statistical test to measure the distance between two distributions.\\
+    \textbf{Key Idea:} MMD is defined as the squared distance between the mean embeddings of two distributions in a reproducing kernel Hilbert space (RKHS).\\
+    \textbf{Mathematical Definition:}
+    \[
+        \text{MMD}^2(\mathcal{D}_S, \mathcal{D}_T) = \left\| \frac{1}{n} \sum_{i=1}^{n} \phi(x_i) - \frac{1}{m} \sum_{j=1}^{m} \phi(y_j) \right\|_{\mathcal{H}}^2
+    \]
+    \[
+        \text{MMD}^2_k(P,Q) := \mathbb{E}_{x,x'}[k(x,x')] + \mathbb{E}_{y,y'}[k(y,y')] - 2\mathbb{E}_{x,y}[k(x,y)]
+    \]   
+\end{frame}
 
-    \textbf{Motivation:} Motivation of an Ensemble method is to use multiple diffrent models and then combine them to get a better performance. 
-    We belive that mistakes from different averages out giving an overall better performance. \\
+\begin{frame}
+    \frametitle{Estimation of MMD}
+    MMD can be estimated using the empirical distributions of the samples. The empirical MMD is given by:
+    \[
+         X = \{x_1, x_2, \ldots, x_m\} \text{ and } Y = \{y_1, y_2, \ldots, y_m\}
+    \]
+    \scriptsize \[
+        \widehat{\text{MMD}}^2(P, Q) = \frac{1}{m(m-1)} \sum_{i=1}^{m} \sum_{j \neq i}^{m} k(x_i, x_j) + \frac{1}{n(n-1)} \sum_{i=1}^{n} \sum_{j \neq i}^{n} k(y_i, y_j) - \frac{2}{mn} \sum_{i=1}^{m} \sum_{j=1}^{n} k(x_i, y_j)
+    \]
+    \normalsize
+    \textbf{Key Idea:} The empirical MMD is an unbiased estimator of the true MMD.\\
+    From this we can define a test statistic:
+    \[
+        T = \frac{\hat{\text{MMD}}^2(X,Y)}{\sqrt{\hat{V_m}(X,Y)}}
+    \]
+    Where \(V_m\) is unbiased estimator of the variance of the MMD.\\
+    \textbf{Key Idea:} If \(T\) is large, then the two distributions are likely different.\\
 
-    \textbf{Methods used:} \\
-    For Combining the results from the different models we have used the following methods: 
+\end{frame}
+
+\begin{frame}
+    \frametitle{Experiments on MMD}
+    We have used synthetic data to test MMD. The experiment uses two different distributions:
+    \begin{figure}[h]
+        \centering
+        \includegraphics[width=0.9\linewidth]{mmdDataset.png}
+        \caption{Synthetic datasets used for MMD experiments.}
+    \end{figure}
+\end{frame}
+
+\begin{frame}
+    \frametitle{Results of MMD}
+    \begin{figure}[h]
+        \centering
+        \includegraphics[width=0.8\linewidth]{Test_powe_vs_eps.png}
+        \caption{Test power vs $\epsilon$ (epsilon). As the difference between distributions increases, MMD becomes more effective at distinguishing them.}
+    \end{figure}
+\end{frame}
+
+% \begin{frame}
+%     \frametitle{Results of MMD}
+
+%     \begin{figure}[h]
+%         \centering
+%         \begin{minipage}{0.48\textwidth}
+%             \includegraphics[width=\linewidth]{t_vs_sigma.png}
+%             \caption{Test statistic T vs kernel bandwidth $\sigma$}
+%         \end{minipage}
+%         \hfill
+%         \begin{minipage}{0.48\textwidth}
+%             \includegraphics[width=\linewidth]{MMD vs sigma.png}
+%             \caption{MMD value vs kernel bandwidth $\sigma$}
+%         \end{minipage}
+%     \end{figure}
+% \end{frame}
+
+\begin{frame}
+    \frametitle{MMD in UDA}
+    \textbf{Key Idea:} MMD can be used as a loss function to minimize the distance between the source and target distributions.\\
+
+    \begin{figure}[h]
+        \centering
+        \includegraphics[width=0.8\linewidth]{mmd_adaptation.png}
+        \caption{MMD used in domain adaptation to align feature distributions.}
+    \end{figure}
+
+\end{frame}
+
+\begin{frame}
+    \frametitle{MMD in UDA}
+    
+    \textbf{Applications in UDA:}
     \begin{itemize}
-        \item \textbf{Majority Voting [Classification]:} The class with the most votes is selected as the final prediction.
-        \item \textbf{Average [Regression]:} The average of the predictions is taken as the final prediction.
+        \item Used to measure discrepancy between source and target feature distributions
+        \item Can be minimized during training to achieve domain-invariant features
+        \item Common in many deep learning UDA methods as a regularization term
     \end{itemize}
-    To obtain independent models we can do the following:
+
+\end{frame}
+
+
+% \begin{frame}
+%     \frametitle{Ensemble Methods}
+
+%     \textbf{Motivation:} Motivation of an Ensemble method is to use multiple diffrent models and then combine them to get a better performance. 
+%     We belive that mistakes from different averages out giving an overall better performance. \\
+
+%     \textbf{Methods used:} \\
+%     For Combining the results from the different models we have used the following methods: 
+%     \begin{itemize}
+%         \item \textbf{Majority Voting [Classification]:} The class with the most votes is selected as the final prediction.
+%         \item \textbf{Average [Regression]:} The average of the predictions is taken as the final prediction.
+%     \end{itemize}
+%     To obtain independent models we can do the following:
+%     \begin{itemize}
+%         \item Use different architectures for each model.
+%         \item Use different initializations for each model.
+%         \item Save instances of models on regular intervals while training.
+%     \end{itemize}
+
+    
+
+% \end{frame}
+
+
+\subsection{Domain Separation Network}
+\begin{frame}
+    \frametitle{Domain Separation Network}
+    \textbf{Motivation:} Obtaining large datasets is very difficult and expensive. So we wish to use the data from a synthetically generated source and then adapt it to the real world.\\
+    \textbf{Idea:} In this method we learn two types of features:
     \begin{itemize}
-        \item Use different architectures for each model.
-        \item Use different initializations for each model.
-        \item Save instances of models on regular intervals while training.
+        \item \textbf{Domain Invariant Features:} These features are common to both the source and target domains. They are used to classify the data.
+        \item \textbf{Domain Specific Features:} These features are specific to the source or target domain. They are used to separate the two domains.
     \end{itemize}
+\end{frame}
+
+\begin{frame}
+    \frametitle{DSN Architecture}
+
+    \begin{figure}
+        \centering
+        \includegraphics[width=0.9\linewidth]{DSN_Architecture.png}
+        \caption{Domain Separation Network Architecture. The network learns both domain-invariant and domain-specific features through separate encoders.}
+    \end{figure}
+
+\end{frame}
+
+% \begin{frame}
+%     \frametitle{DSN Loss Function}
+%     \[
+%         \mathcal{L} = \mathcal{L}_{task} + \alpha \mathcal{L}_{recon} + \beta \mathcal{L}_{difference} + \gamma \mathcal{L}_{similarity}
+%     \]
+%     \[
+%         \mathcal{L}_{task} = sum_{i=1}^{n} \mathbf{y_i}^s \cdot log(\mathbf{y_i}^s)
+%     \]
+%     \[
+%         \mathcal{L}_{recon} = sum_{i=1}^{N_s}\mathcal{L}_{si_mse}(\mathbf{x_i}^s,   \mathbf{x_i}^s) + sum_{i=1}^{N_t}\mathcal{L}_{si_mse}(\mathbf{y_i}^t, \mathbf{y_i}^s)
+%     \]
+
+
+    
+
+% \end{frame}
+
+\begin{frame}
+    \frametitle{Experiments on DSN}
+    \textbf{Dataset:} We used the MNIST and MNIST-M datasets for the experiments.\\
+
+    \begin{table}[h]
+        \centering
+        \begin{tabular}{lc}
+        \toprule
+        \textbf{Method} & \textbf{Accuracy} \\
+        \midrule
+        DSN (Ours) & 81.6\% \\
+        DSN (Paper) & 83.2\% \\
+        \bottomrule
+      \end{tabular}
+      \caption{Results comparing our DSN implementation with original paper}
+    \end{table}
+
 
     
 
 \end{frame}
 
+\begin{frame}
+    \frametitle{Results of DSN}
+
+    \begin{figure}
+        \centering
+        % First row
+        \begin{subfigure}[b]{0.3\linewidth}
+            \includegraphics[width=\linewidth]{source.png}
+            \caption{Source Images}
+        \end{subfigure}
+        \hfill
+        \begin{subfigure}[b]{0.3\linewidth}
+            \includegraphics[width=\linewidth]{target.png}
+            \caption{Target Images}
+        \end{subfigure}
+        \hfill
+        \begin{subfigure}[b]{0.3\linewidth}
+            \includegraphics[width=\linewidth]{DNS_MNIST_MNISTM.png}
+            \caption{Classification Results}
+        \end{subfigure}
+    \end{figure}
+\end{frame}
+
+\begin{frame}
+    \frametitle{Results of DSN}
+
+    \begin{figure}
+        \centering
+        \begin{subfigure}[b]{0.4\linewidth}
+            \includegraphics[width=\linewidth]{reconstructed_source.png}
+            \caption{\small Reconstructed Source Images}
+        \end{subfigure}
+        \hfill
+        \begin{subfigure}[b]{0.4\linewidth}
+            \includegraphics[width=\linewidth]{reconstructed_target.png}
+            \caption{\small Reconstructed Target Images}
+        \end{subfigure}
+        \caption{\small Experiments on DSN with MNIST and MNIST-M datasets}
+    \end{figure}
+
+    
+
+\end{frame}
+
+
+\subsection{Asymmetric Tri-training}
 \begin{frame}
     \frametitle{Asymmetric Tri-training}
 
@@ -390,6 +619,11 @@ The structure of source and target distributions is shown below:
             &+ \lambda |W_1^T W_2|
             \end{aligned}
           \]
+          \item \normalsize \textbf{Loss Function for Ft:}
+          \tiny \[
+             \mathcal{L}(\theta_F, \theta_{F_t}) =
+            \mathcal{L}_{CE}(F_t(x_t), \hat{y}_t) 
+          \]
         \end{itemize}
       \end{column}
     
@@ -424,92 +658,6 @@ The structure of source and target distributions is shown below:
       \end{table}
 \end{frame}
 
-
-\begin{frame}
-    \frametitle{Maximum Mean Discrepancy}
-    \textbf{Concept:} MMD is a statistical test to measure the distance between two distributions. It is used to determine if two samples are drawn from the same distribution.\\
-    \textbf{Key Idea:} MMD is defined as the squared distance between the mean embeddings of two distributions in a reproducing kernel Hilbert space (RKHS).\\
-    \textbf{Mathematical Definition:}
-    \[
-        \text{MMD}^2(\mathcal{D}_S, \mathcal{D}_T) = \left\| \frac{1}{n} \sum_{i=1}^{n} \phi(x_i) - \frac{1}{m} \sum_{j=1}^{m} \phi(y_j) \right\|_{\mathcal{H}}^2
-    \]
-    \[
-        \text{MMD}^2_k(P,Q) := \mathbb{E}_{x,x'}[k(x,x')] + \mathbb{E}_{y,y'}[k(y,y')] - 2\mathbb{E}_{x,y}[k(x,y)]
-    \]   
-\end{frame}
-
-\begin{frame}
-    \frametitle{Estimation of MMD}
-    MMD can be estimated using the empirical distributions of the samples. The empirical MMD is given by:
-    \[
-         X = \{x_1, x_2, \ldots, x_m\} \text{ and } Y = \{y_1, y_2, \ldots, y_m\}
-    \]
-    \small \[
-        \hat{\text{MMD}}^2(X,Y) = \frac{2}{m(m-1)} \sum_{j \neq i} k(x_i,x_j) + \frac{2}{m(m-1)} \sum_{j \neq i} k(y_i,y_j) - \frac{4}{m^2} \sum_{i,j} k(x_i,y_j)
-    \]
-    From this we can define a test statistic:
-    \[
-        T = \frac{\hat{\text{MMD}}^2(X,Y)}{\sqrt{\hat{V_m}(X,Y)}}
-    \]
-    Where \(V_m\) is unbiased estimator of the variance of the MMD.\\
-    \textbf{Key Idea:} If \(T\) is large, then the two distributions are likely different.\\
-
-\end{frame}
-
-\begin{frame}
-    \frametitle{Experiments on MMD}
-    We have used synthetic data to test MMD. The experiment uses two different distributions:
-    \begin{figure}[h]
-        \centering
-        \includegraphics[width=0.9\linewidth]{mmdDataset.png}
-        \caption{Synthetic datasets used for MMD experiments.}
-    \end{figure}
-\end{frame}
-
-\begin{frame}
-    \frametitle{Results of MMD}
-    \begin{figure}[h]
-        \centering
-        \includegraphics[width=0.8\linewidth]{Test_powe_vs_eps.png}
-        \caption{Test power vs $\epsilon$ (epsilon). As the difference between distributions increases, MMD becomes more effective at distinguishing them.}
-    \end{figure}
-\end{frame}
-
-\begin{frame}
-    \frametitle{Results of MMD}
-
-    \begin{figure}[h]
-        \centering
-        \begin{minipage}{0.48\textwidth}
-            \includegraphics[width=\linewidth]{t_vs_sigma.png}
-            \caption{Test statistic T vs kernel bandwidth $\sigma$}
-        \end{minipage}
-        \hfill
-        \begin{minipage}{0.48\textwidth}
-            \includegraphics[width=\linewidth]{MMD vs sigma.png}
-            \caption{MMD value vs kernel bandwidth $\sigma$}
-        \end{minipage}
-    \end{figure}
-\end{frame}
-
-\begin{frame}
-    \frametitle{MMD use in UDA}
-    \textbf{Key Idea:} MMD can be used as a loss function to minimize the distance between the source and target distributions.\\
-
-    Methods:
-    \begin{itemize}
-        \item We can train Neural Networks using MMD as a loss function.
-        \item We can combine multiple kernels using a weighted sum and learn their weights: 
-        \[
-        k(x,y) = \sum_{i=1}^m \beta_i k_i(x,y), \quad \beta_i \geq 0, \quad \sum_{i=1}^m \beta_i = 1
-        \]
-        \item We c
-    \end{itemize}
-
-    
-
-
-\end{frame}
 
 
 \end{document}
