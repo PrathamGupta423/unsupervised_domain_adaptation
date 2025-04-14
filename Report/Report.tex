@@ -94,23 +94,18 @@
 
 
 \section{Introduction}
-Unsupervised domain adaptation (UDA) is a type of domain adaptation in machine learning where a model is trained on a source domain with labelled data, and then adapted to a target domain with unlabelled data.
-In UDA, the source domain and target domain have different distributions, but
-the goal is to leverage the labelled data in the source domain to improve performance on the target
-domain. \\
-This report is product of our exploration of state of the art UDA algorithms and their applications in various fields like computer vision, natural language processing, etc. 
-We have reproduced the results of these key papers [] in this research area of machine learning.
+Unsupervised Domain Adaptation (UDA) addresses the challenge of training models on a labelled source domain and adapting them to an unlabeled target domain with a different data distribution. In this report, we explore state-of-the-art UDA techniques and their applications in areas such as computer vision and natural language processing. We also reproduce results from influential works [\cite{ganin2016domainadversarialtrainingneuralnetworks}, \cite{survey} , \cite{Ben-David2010}] to deepen our understanding of this field.
 
 \section{Methodology}
 
 \subsection{Algorithms}
 We have implemented the following algorithms for our experiments:
 \begin{itemize}
-  \item \textbf{DANN (Domain-Adversarial Neural Network)}[]: Trains the model in an adversarial manner to learn the domain invariant features using a gradient reversal layer and a DNN.
-  \item \textbf{CORAL (Correlation Alignment), DeepCORAL}[][]: CORAL aligns the second-order statistics (covariances) of source and target features. Accordingly, DeepCORAL is an extension of CORAL that integrates correlation alignment into deep neural networks.
-  \item \textbf{MMD (Maximum Mean Discrepancy)}[]: A metric that quantifies non-alignment between the source and target distributions. It is used as a loss function and in validating models. 
-  \item \textbf{DSN (Domain Separation Network)}[]: Separates domain-specific and domain-invariant features for better adaptation. A state of the art method for domain invariant feature learning.
-  \item \textbf{ATT (Adversarial Training with Triplet loss)}[]:An ensemble method that utilize two classifier trained on source domain to pseudo-label target domain to learn a classifier for it.
+  \item \textbf{DANN (Domain-Adversarial Neural Network)}[\cite{ganin2016domainadversarialtrainingneuralnetworks}]: Trains the model in an adversarial manner to learn the domain invariant features using a gradient reversal layer and a DNN.
+  \item \textbf{CORAL (Correlation Alignment), DeepCORAL}[\cite{Coral},\cite{DeepCoral}]: CORAL aligns the second-order statistics (covariances) of source and target features. Accordingly, DeepCORAL is an extension of CORAL that integrates correlation alignment into deep neural networks.
+  \item \textbf{MMD (Maximum Mean Discrepancy)}[\cite{sutherland2017generative}]: A metric that quantifies non-alignment between the source and target distributions. It is used as a loss function and in validating models. 
+  \item \textbf{DSN (Domain Separation Network)}[\cite{DSN}]: Separates domain-specific and domain-invariant features for better adaptation. A state of the art method for domain invariant feature learning.
+  \item \textbf{ATT (Adversarial Training with Triplet loss)}[\cite{pmlr-v70-saito17a}]:An ensemble method that utilize two classifier trained on source domain to pseudo-label target domain to learn a classifier for it.
 \end{itemize}
 
 \subsection{Datasets}
@@ -457,7 +452,12 @@ We implemented the Asymmetric Tri-training algorithm using PyTorch. The model ar
   \label{fig:att_implementation}
 \end{figure}
 
+\section*{Acknowledgements}
+We would like to express our sincere gratitude to Prof. Chiranjib Bhattacharyya and Prof. Shishir N. Y. Kolathaya for offering the course UMC203, which provided us with a strong foundation that greatly helped us in the preparation of this report. We are especially thankful to our TA, Pranav K. Nayak, for his guidance, prompt support, and constructive feedback throughout the project. This project would not have been possible without the intellectually stimulating environment fostered by the instructors and the TA.
 
+% \section*{References}
+\bibliographystyle{unsrt}
+\bibliography{references}
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 

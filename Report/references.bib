@@ -1,0 +1,108 @@
+
+@article{survey,
+author = {Wilson, Garrett and Cook, Diane J.},
+title = {A Survey of Unsupervised Deep Domain Adaptation},
+year = {2020},
+issue_date = {October 2020},
+publisher = {Association for Computing Machinery},
+address = {New York, NY, USA},
+volume = {11},
+number = {5},
+issn = {2157-6904},
+url = {https://doi.org/10.1145/3400066},
+doi = {10.1145/3400066},
+abstract = {Deep learning has produced state-of-the-art results for a variety of tasks. While such approaches for supervised learning have performed well, they assume that training and testing data are drawn from the same distribution, which may not always be the case. As a complement to this challenge, single-source unsupervised domain adaptation can handle situations where a network is trained on labeled data from a source domain and unlabeled data from a related but different target domain with the goal of performing well at test-time on the target domain. Many single-source and typically homogeneous unsupervised deep domain adaptation approaches have thus been developed, combining the powerful, hierarchical representations from deep learning with domain adaptation to reduce reliance on potentially costly target data labels. This survey will compare these approaches by examining alternative methods, the unique and common elements, results, and theoretical insights. We follow this with a look at application areas and open research directions.},
+journal = {ACM Trans. Intell. Syst. Technol.},
+month = jul,
+articleno = {51},
+numpages = {46},
+keywords = {Domain adaptation, deep learning, generative adversarial networks}
+}
+
+@misc{ganin2016domainadversarialtrainingneuralnetworks,
+      title={Domain-Adversarial Training of Neural Networks}, 
+      author={Yaroslav Ganin and Evgeniya Ustinova and Hana Ajakan and Pascal Germain and Hugo Larochelle and François Laviolette and Mario Marchand and Victor Lempitsky},
+      year={2016},
+      eprint={1505.07818},
+      archivePrefix={arXiv},
+      primaryClass={stat.ML},
+      url={https://arxiv.org/abs/1505.07818}, 
+}
+
+
+@InProceedings{pmlr-v70-saito17a,
+  title = 	 {Asymmetric Tri-training for Unsupervised Domain Adaptation},
+  author =       {Kuniaki Saito and Yoshitaka Ushiku and Tatsuya Harada},
+  booktitle = 	 {Proceedings of the 34th International Conference on Machine Learning},
+  pages = 	 {2988--2997},
+  year = 	 {2017},
+  editor = 	 {Precup, Doina and Teh, Yee Whye},
+  volume = 	 {70},
+  series = 	 {Proceedings of Machine Learning Research},
+  month = 	 {06--11 Aug},
+  publisher =    {PMLR},
+  pdf = 	 {http://proceedings.mlr.press/v70/saito17a/saito17a.pdf},
+  url = 	 {https://proceedings.mlr.press/v70/saito17a.html},
+  abstract = 	 {It is important to apply models trained on a large number of labeled samples to different domains because collecting many labeled samples in various domains is expensive. To learn discriminative representations for the target domain, we assume that artificially labeling the target samples can result in a good representation. Tri-training leverages three classifiers equally to provide pseudo-labels to unlabeled samples; however, the method does not assume labeling samples generated from a different domain. In this paper, we propose the use of an <em>asymmetric</em> tri-training method for unsupervised domain adaptation, where we assign pseudo-labels to unlabeled samples and train the neural networks as if they are true labels. In our work, we use three networks <em>asymmetrically</em>, and by <em>asymmetric</em>, we mean that two networks are used to label unlabeled target samples, and one network is trained by the pseudo-labeled samples to obtain target-discriminative representations. Our proposed method was shown to achieve a state-of-the-art performance on the benchmark digit recognition datasets for domain adaptation.}
+}
+
+@article{Ben-David2010,
+  author    = {Ben-David, Shai and Blitzer, John and Crammer, Koby and Kulesza, Alex and Pereira, Fernando and Vaughan, Jennifer Wortman},
+  title     = {A theory of learning from different domains},
+  journal   = {Machine Learning},
+  year      = {2010},
+  volume    = {79},
+  number    = {1},
+  pages     = {151--175},
+  doi       = {10.1007/s10994-009-5152-4},
+  url       = {https://doi.org/10.1007/s10994-009-5152-4}
+}
+
+@inproceedings{Coral,
+author = {Sun, Baochen and Feng, Jiashi and Saenko, Kate},
+title = {Return of frustratingly easy domain adaptation},
+year = {2016},
+publisher = {AAAI Press},
+abstract = {Unlike human learning, machine learning often fails to handle changes between training (source) and test (target) input distributions. Such domain shifts, common in practical scenarios, severely damage the performance of conventional machine learning methods. Supervised domain adaptation methods have been proposed for the case when the target data have labels, including some that perform very well despite being "frustratingly easy" to implement. However, in practice, the target domain is often unlabeled, requiring unsupervised adaptation. We propose a simple, effective, and efficient method for unsupervised domain adaptation called CORrelation ALignment (CORAL). CORAL minimizes domain shift by aligning the second-order statistics of source and target distributions, without requiring any target labels. Even though it is extraordinarily simple–it can be implemented in four lines of Matlab code–CORAL performs remarkably well in extensive evaluations on standard benchmark datasets.},
+booktitle = {Proceedings of the Thirtieth AAAI Conference on Artificial Intelligence},
+pages = {2058–2065},
+numpages = {8},
+location = {Phoenix, Arizona},
+series = {AAAI'16}
+}
+
+@InProceedings{DeepCoral,
+author="Sun, Baochen
+and Saenko, Kate",
+editor="Hua, Gang
+and J{\'e}gou, Herv{\'e}",
+title="Deep CORAL: Correlation Alignment for Deep Domain Adaptation",
+booktitle="Computer Vision -- ECCV 2016 Workshops",
+year="2016",
+publisher="Springer International Publishing",
+address="Cham",
+pages="443--450",
+abstract="Deep neural networks are able to learn powerful representations from large quantities of labeled input data, however they cannot always generalize well across changes in input distributions. Domain adaptation algorithms have been proposed to compensate for the degradation in performance due to domain shift. In this paper, we address the case when the target domain is unlabeled, requiring unsupervised adaptation. CORAL [18] is a simple unsupervised domain adaptation method that aligns the second-order statistics of the source and target distributions with a linear transformation. Here, we extend CORAL to learn a nonlinear transformation that aligns correlations of layer activations in deep neural networks (Deep CORAL). Experiments on standard benchmark datasets show state-of-the-art performance. Our code is available at: https://github.com/VisionLearningGroup/CORAL.",
+isbn="978-3-319-49409-8"
+}
+
+@inproceedings{
+sutherland2017generative,
+title={Generative Models and Model Criticism via Optimized Maximum Mean Discrepancy},
+author={Danica J. Sutherland and Hsiao-Yu Tung and Heiko Strathmann and Soumyajit De and Aaditya Ramdas and Alex Smola and Arthur Gretton},
+booktitle={International Conference on Learning Representations},
+year={2017},
+url={https://openreview.net/forum?id=HJWHIKqgl}
+}
+
+@inproceedings{DSN,
+ author = {Bousmalis, Konstantinos and Trigeorgis, George and Silberman, Nathan and Krishnan, Dilip and Erhan, Dumitru},
+ booktitle = {Advances in Neural Information Processing Systems},
+ editor = {D. Lee and M. Sugiyama and U. Luxburg and I. Guyon and R. Garnett},
+ pages = {},
+ publisher = {Curran Associates, Inc.},
+ title = {Domain Separation Networks},
+ url = {https://proceedings.neurips.cc/paper_files/paper/2016/file/45fbc6d3e05ebd93369ce542e8f2322d-Paper.pdf},
+ volume = {29},
+ year = {2016}
+}
