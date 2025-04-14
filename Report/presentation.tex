@@ -11,12 +11,14 @@
 \usepackage{caption}
 \usepackage{adjustbox}
 \usepackage{graphicx}
-\usetheme{Madrid}
-\usecolortheme{seahorse}
+% \usetheme{Madrid}
+% \usecolortheme{seahorse}
+\usetheme{CambridgeUS}
+\usecolortheme{crane}
 
 \graphicspath{{./a/}}
 
-\title[Unsupervised Domain Adaptation]{Unsupervised Domain Adaptation}
+\title{Unsupervised Domain Adaptation}
 \author{}
 \institute{Indian Institute of Science, Bangalore}
 \date{\today}
@@ -26,46 +28,89 @@
 % Title Slide
 \frame{\titlepage}
 
-% Slide 1 - Motivation
-\begin{frame}{Motivation}
-\begin{itemize}
-    \item \textbf{Domain adaptation} aims to transfer knowledge from a source domain to a target domain with different data distributions.
-    \item In the \textbf{unsupervised} setting, only source domain data is labeled; target domain data is unlabeled.
-    \item Standard learning techniques fail due to the \textbf{domain shift}.
-    \item To address this, we train models to learn \textbf{domain-invariant features} that perform well across domains.
-\end{itemize}
-\end{frame}
-
-% Slide 2 - Setup
-\begin{frame}{Domain Adaptation Setup}
-\begin{itemize}
-    \item Input space: $\mathcal{X}$, Label space: $\mathcal{Y} = \{0, 1, \ldots, L-1\}$
-    \item \textbf{Source distribution:} $\mathcal{D}_S$ over $\mathcal{X} \times \mathcal{Y}$
-    \item \textbf{Target distribution:} $\mathcal{D}_T$ over $\mathcal{X} \times \mathcal{Y}$
-    \item Training data:
+\begin{frame}
+    \frametitle{Project Motivation}
+    Our goal is to explore the field of \textbf{Unsupervised Domain Adaptation (UDA)} and Implement some of the state-of-the-art methods.\\
+    Flow of the presentation:
     \begin{itemize}
-        \item Labeled source set: $S = \{(x_i, y_i)\}_{i=1}^{n}$
-        \item Unlabeled target set: $T = \{x_j\}_{j=1}^{n'}$
+        \item Introduction to UDA
+        \item Domain-Adversarial Training of Neural Networks (DANN)
+        \item Survey of Other Methods of UDA
+        \begin{itemize}
+            \item Divergence Based Methods
+            \item Reconstruction Based Methods
+            \item Ensemble Methods
+        \end{itemize}
+    \end{itemize}    
+
+\end{frame}
+
+\begin{frame}
+    \frametitle{What is UDA?}
+    \textbf{Domain Adaptation (DA)} is a subfield of machine learning that focuses on transferring knowledge from a source domain to a target domain with different data distributions.\\
+    \textbf{Key Idea:} The goal is to learn a model that performs well on the target domain, even when only labeled data from the source domain is available.\\
+    \textbf{Challenges:} The main challenge in UDA is the domain shift, which occurs when the source and target domains have different distributions. This can lead to poor performance of standard learning techniques.\\
+    \begin{figure}
+        \centering
+        \includegraphics[width=0.5\linewidth]{Example of Domain Shift.png}
+        \caption{Example of domain shift between source and target domains}
+    \end{figure}
+\end{frame}
+
+\begin{frame}
+    \frametitle{What is UDA?}
+    In \textbf{Unsupervised Domain Adaptation (UDA)}, only the source domain data is labeled, while the target domain data is unlabeled.\\
+
+    \textbf{Applications:} 
+    \begin{itemize}
+        \item When shifting a model trained on \textbf{synthetic data} to \textbf{real-world data}, the model may not perform well due to the differences in data distributions.
+        \item For systems like \textbf{Security Cameras} and \textbf{Autonomous Driving}, the inputs to each camera belong to different domains. So we wish to adapt the model to the new domain.
     \end{itemize}
-\end{itemize}
-\end{frame}
 
-% Slide 3 - H-Divergence
-\begin{frame}{$\mathcal{H}$-Divergence}
-\[
-d_{\mathcal{H}}(\mathcal{D}_S^X, \mathcal{D}_T^X) = 2 \sup_{\eta \in \mathcal{H}} \left| \Pr_{x \sim \mathcal{D}_S^X}[\eta(x)=1] - \Pr_{x \sim \mathcal{D}_T^X}[\eta(x)=1] \right|
-\]
+    
 
-\begin{itemize}
-    \item Measures the ability of a hypothesis $\eta \in \mathcal{H}$ to distinguish between source and target distributions.
-    \item High $d_{\mathcal{H}}$ implies easy domain discrimination — bad for transfer.
-    \item For symmetric hypothesis classes, it can be estimated via:
-    \[
-    \hat{d}_A = 2 (1 - 2\epsilon)
-    \]
-    \item Here, $\epsilon$ is the generalization error of a domain classifier.
-\end{itemize}
 \end{frame}
+% % Slide 1 - Motivation
+% \begin{frame}{Project Motivation}
+
+% \begin{itemize}
+%     \item \textbf{Domain adaptation} aims to transfer knowledge from a source domain to a target domain with different data distributions.
+%     \item In the \textbf{unsupervised} setting, only source domain data is labeled; target domain data is unlabeled.
+%     \item Standard learning techniques fail due to the \textbf{domain shift}.
+%     \item To address this, we train models to learn \textbf{domain-invariant features} that perform well across domains.
+% \end{itemize}
+% \end{frame}
+
+% % Slide 2 - Setup
+% \begin{frame}{Domain Adaptation Setup}
+% \begin{itemize}
+%     \item Input space: $\mathcal{X}$, Label space: $\mathcal{Y} = \{0, 1, \ldots, L-1\}$
+%     \item \textbf{Source distribution:} $\mathcal{D}_S$ over $\mathcal{X} \times \mathcal{Y}$
+%     \item \textbf{Target distribution:} $\mathcal{D}_T$ over $\mathcal{X} \times \mathcal{Y}$
+%     \item Training data:
+%     \begin{itemize}
+%         \item Labeled source set: $S = \{(x_i, y_i)\}_{i=1}^{n}$
+%         \item Unlabeled target set: $T = \{x_j\}_{j=1}^{n'}$
+%     \end{itemize}
+% \end{itemize}
+% \end{frame}
+
+% % Slide 3 - H-Divergence
+% \begin{frame}{$\mathcal{H}$-Divergence}
+% \[
+% d_{\mathcal{H}}(\mathcal{D}_S^X, \mathcal{D}_T^X) = 2 \sup_{\eta \in \mathcal{H}} \left| \Pr_{x \sim \mathcal{D}_S^X}[\eta(x)=1] - \Pr_{x \sim \mathcal{D}_T^X}[\eta(x)=1] \right|
+% \]
+
+% \begin{itemize}
+%     \item Measures the ability of a hypothesis $\eta \in \mathcal{H}$ to distinguish between source and target distributions.
+%     \item High $d_{\mathcal{H}}$ implies easy domain discrimination — bad for transfer.
+%     \item For symmetric hypothesis classes, it can be estimated via:
+%     \[
+%     \hat{d}_A = 2 (1 - 2\epsilon)
+%     \]
+%     \item Here, $\epsilon$ is the generalization error of a domain classifier.
+% \end{itemize}
+% \end{frame}
 
 % Slide 4 - DANN Architecture
 \begin{frame}{DANN Architecture}
@@ -74,6 +119,13 @@ d_{\mathcal{H}}(\mathcal{D}_S^X, \mathcal{D}_T^X) = 2 \sup_{\eta \in \mathcal{H}
     \includegraphics[width=0.9\linewidth]{DANN_img.png}
     \caption{Domain-Adversarial Neural Network (DANN) Architecture}
 \end{figure}
+\end{frame}
+
+\begin{frame}
+    \frametitle{DANN}
+    
+    
+
 \end{frame}
 
 % Slide 5 - Key Idea
@@ -248,32 +300,32 @@ The structure of source and target distributions is shown below:
 
 \end{frame}
 
-\begin{frame}{\centering \large MNIST $\rightarrow$ MNIST-M: Top Feature Extractor Layer}
-\centering
+% \begin{frame}{\centering \large MNIST $\rightarrow$ MNIST-M: Top Feature Extractor Layer}
+% \centering
 
-\begin{adjustbox}{max width=\textwidth}
-\begin{tabular}{cc}
-% Left Image
-\begin{subfigure}[t]{0.45\textwidth}
-    \centering
-    \includegraphics[width=\linewidth]{Source-only.png}
-    \caption{Non-adapted}
-\end{subfigure}
-&
-% Right Image
-\begin{subfigure}[t]{0.45\textwidth}
-    \centering
-    \includegraphics[width=\linewidth]{DANN.png}
-    \caption{Adapted}
-\end{subfigure}
-\end{tabular}
-\end{adjustbox}
+% \begin{adjustbox}{max width=\textwidth}
+% \begin{tabular}{cc}
+% % Left Image
+% \begin{subfigure}[t]{0.45\textwidth}
+%     \centering
+%     \includegraphics[width=\linewidth]{Source-only.png}
+%     \caption{Non-adapted}
+% \end{subfigure}
+% &
+% % Right Image
+% \begin{subfigure}[t]{0.45\textwidth}
+%     \centering
+%     \includegraphics[width=\linewidth]{DANN.png}
+%     \caption{Adapted}
+% \end{subfigure}
+% \end{tabular}
+% \end{adjustbox}
 
-\vspace{0.3cm}
-\small
-\textbf{Figure:} t-SNE visualizations of extracted features. \textcolor{blue}{Blue} points: source domain (MNIST); \textcolor{red}{Red} points: target domain (MNIST-M). Adaptation aligns distributions better.
+% \vspace{0.3cm}
+% \small
+% \textbf{Figure:} t-SNE visualizations of extracted features. \textcolor{blue}{Blue} points: source domain (MNIST); \textcolor{red}{Red} points: target domain (MNIST-M). Adaptation aligns distributions better.
 
-\end{frame}
+% \end{frame}
 
 \begin{frame}
     \frametitle{Ensemble Methods}
