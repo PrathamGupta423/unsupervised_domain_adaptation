@@ -103,7 +103,7 @@ We have implemented the following algorithms for our experiments:
 \begin{itemize}
   \item \textbf{DANN (Domain-Adversarial Neural Network)}[\cite{ganin2016domainadversarialtrainingneuralnetworks}]: Trains the model in an adversarial manner to learn the domain invariant features using a gradient reversal layer and a DNN.
   \item \textbf{CORAL (Correlation Alignment), DeepCORAL}[\cite{Coral},\cite{DeepCoral}]: CORAL aligns the second-order statistics (covariances) of source and target features. Accordingly, DeepCORAL is an extension of CORAL that integrates correlation alignment into deep neural networks.
-  \item \textbf{MMD (Maximum Mean Discrepancy)}[\cite{sutherland2017generative}]: A metric that quantifies non-alignment between the source and target distributions. It is used as a loss function and in validating models. 
+  \item \textbf{MMD (Maximum Mean Discrepancy)}[\cite{sutherland2017generative}]: A metric that quantifies non-alignment between the source and target distributions. It can be used as a loss function for DNNs.
   \item \textbf{DSN (Domain Separation Network)}[\cite{DSN}]: Separates domain-specific and domain-invariant features for better adaptation. A state of the art method for domain invariant feature learning.
   \item \textbf{ATT (Adversarial Training with Triplet loss)}[\cite{pmlr-v70-saito17a}]:An ensemble method that utilize two classifier trained on source domain to pseudo-label target domain to learn a classifier for it.
 \end{itemize}
@@ -129,11 +129,10 @@ We have used the following datasets\ref{tab:datasets} for our experiments:
 \section{Experiments}
 \subsection{CORAL and DeepCORAL}
 \subsubsection{CORAL}
-CORAL was implemented and tested for basic robustness by creating linearly separable random Gaussian datasets with same and different covariances. This is done for 100 iterations and the average accuracies have been reported in Table \ref{tab:coral}.
-
+CORAL was implemented and tested for basic robustness by synthetic linearly separable random Gaussian datasets with same and different covariances. Results are reported in table\ref{tab:coral}.
 \begin{table}[h]
   \centering
-  \caption{Performance of CORAL on synthetic datasets.}
+  \caption{Performance of CORAL on synthetic datasets. Averaged over 100 iterations.}
   \label{tab:coral}
   \begin{tabular}{ccc}
     \toprule
@@ -148,7 +147,7 @@ CORAL was implemented and tested for basic robustness by creating linearly separ
 \end{table}
 
 \subsubsection{DeepCORAL}
-We have implemented the DeepCORAL algorithm and observed its performance in domain adaptation using the Office dataset, taking every combination of domains as source and target. Our results alongwith the results mentioned in the survey paper[] are shown in Table \ref{tab:deepcoral}. It is observable that the result for \textbf{W}$\rightarrow$ \textbf{A} is in disagreement with the result in the survey paper by approximately 4\% whose major reason was the hyperparameter mismatch and the training time of our implementation from the original approach.
+We have implemented the DeepCORAL algorithm and observed its performance on the Office dataset. Our results alongwith the results mentioned in the survey paper[\cite{DeepCoral}] are shown in Table \ref{tab:deepcoral}. It is observable that the result for \textbf{W}$\rightarrow$ \textbf{A} is in slight disagreement of 4\% whose major reason we belive is hyperparameter mismatch and the training time of our implementation from the original approach.
  
 \begin{table*}
   \caption{Classification accuracy (source $\rightarrow$ target) of DeepCORAL on the Office computer vision dataset. A: Amazon, D: DSLR, W: Webcam.}
