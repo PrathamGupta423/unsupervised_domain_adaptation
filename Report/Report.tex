@@ -35,6 +35,11 @@
 \usepackage{multirow}
 \usepackage{graphicx}       % include images
 \usepackage{caption}
+\usepackage{algorithm}
+\usepackage{algorithmic}
+\usepackage{amsmath}
+\usepackage{amssymb}
+\usepackage{amsthm}
 
 % Images folder
 
@@ -291,6 +296,73 @@ Overall, our work provides a comparative perspective on multiple UDA techniques 
 \newpage
 \section*{Appendix}
 
+\subsection{Asymmetric Tri-training for Unsupervised Domain Adaptation}
+\subsubsection*{Theory}
+The Asymmetric Tri-training algorithm is a domain adaptation method that leverages multiple classifiers to improve the performance of a model on a target domain. The key idea is to use two classifiers trained on the source domain to generate pseudo-labels for the target domain, and then use these pseudo-labels to train a third classifier. 
+
+The algorithm works in three main steps:
+
+\begin{enumerate}
+  \item \textbf{Source Domain Training}: Two classifiers (F1 and F2) are trained on labeled source domain data.
+  
+  \item \textbf{Pseudo-labeling}: F1 and F2 are used to predict labels for unlabeled target domain data. Only instances where both classifiers agree with high confidence are selected for pseudo-labeling.
+  
+  \item \textbf{Target Classifier Training}: A third classifier (Ft) is trained on the pseudo-labeled target domain data, incorporating a multi-view loss to ensure consistency between predictions.
+\end{enumerate}
+
+Complete Architecture is shown in figure \ref{fig:att_architecture}.
+
+\textbf{Loss Functions:}\\
+ The loss function for Source domain training is the cross-entropy loss + multi-view loss:
+\[
+  \mathcal{L}(\theta_F, \theta_{F_1}, \theta_{F_2}) = \mathcal{L}_{CE}(F_1(x_s), {y}_s) + 
+  \mathcal{L}_{CE}(F_2(x_s), {y}_s) + \lambda
+  \|W_1^T W_2\|
+\]
+The loss function for Target domain training is the cross-entropy loss:
+\[
+  \mathcal{L}(\theta_F, \theta_{F_t}) = \mathcal{L}_{CE}(F_t(x_t), \hat{y}_t)
+\]
+
+\begin{figure}[h]
+  \centering
+  \includegraphics[width=0.8\textwidth]{ATT/ATT_Architecture.png}
+  \caption{ATT Architecture: The feature extractor F processes inputs from both domains. F1 and F2 are source-trained classifiers that generate pseudo-labels for training Ft on the target domain.}
+  \label{fig:att_architecture}
+\end{figure}
+
+\subsubsection*{Pseudocode}
+\begin{algorithm}[H]
+\caption{Asymmetric Tri-training}
+\begin{algorithmic}[1]
+\STATE \textbf{Input:} Source data $X_s = \{(x_i, t_i)\}_{i=1}^m$, Target data $X_t = \{(x_j)\}_{j=1}^n$
+\STATE $X_t^l = \emptyset$ \COMMENT{Initialize labeled target set}
+\FOR{$j = 1$ to $iter$}
+  \STATE Train $F, F_1, F_2, F_t$ with mini-batch from training set $S$
+\ENDFOR
+\STATE $N_t = N_{init}$
+\STATE $X_t^l = \text{Labeling}(F, F_1, F_2, X_t, N_t)$
+\STATE $L = X_s \cup X_t^l$
+\FOR{$K$ steps}
+  \FOR{$j = 1$ to $iter$}
+    \STATE Train $F, F_1, F_2$ with mini-batch from training set $L$
+    \STATE Train $F, F_t$ with mini-batch from training set $X_t^l$
+  \ENDFOR
+  \STATE $X_t^l = \emptyset$, $N_t = K/20 * n$
+  \STATE $X_t^l = \text{Labeling}(F, F_1, F_2, X_t, N_t)$
+  \STATE $L = X_s \cup X_t^l$
+\ENDFOR
+\end{algorithmic}
+\end{algorithm}
+
+\subsection*{Implementation Details}
+We implemented the Asymmetric Tri-training algorithm using PyTorch. The model architecture (fig\ref{fig:att_implementation}) consists of a feature extractor followed by three classifiers. The feature extractor is a convolutional neural network (CNN) for image data, while the classifiers are fully connected layers. We used momentum SDG with a learning rate of 0.01 and momentum 0.9 and a batch size of 128. Lamda was set to 0.01 for the multi-view loss. We trained for 20 iters and value of K as 50. This computation required 2-3 hours of training time on GPU hence we were not able to train it for the recommened 2000 iterations as mentioned in the paper. Which we believe is the reason for the discrepancy in results as compared to the paper.
+\begin{figure}[h]
+  \centering
+  \includegraphics[width=0.8\textwidth]{ATT/Imp_acc.png}
+  \caption{Architecture used for SVHN-MNIST domain adaptation. The feature extractor is a CNN with batch normalization in the last convolutional layer, and the classifiers are fully connected layers with batch normalization and dropout.}
+  \label{fig:att_implementation}
+\end{figure}
 
 
 
