@@ -442,10 +442,10 @@ The structure of source and target distributions is shown below:
     \frametitle{Estimation of MMD}
     MMD can be estimated using the empirical distributions of the samples. The empirical MMD is given by:
     \[
-         X = \{x_1, x_2, \ldots, x_n\} \text{ and } Y = \{y_1, y_2, \ldots, y_m\}
+         X = \{x_1, x_2, \ldots, x_m\} \text{ and } Y = \{y_1, y_2, \ldots, y_m\}
     \]
     \small \[
-        \hat{\text{MMD}}^2(X,Y) = \frac{1}{n(n-1)} \sum_{i \neq j} k(x_i, x_j) + \frac{1}{m(m-1)} \sum_{i \neq j} k(y_i, y_j) - \frac{2}{nm} \sum_{i,j} k(x_i, y_j)
+        \hat{\text{MMD}}^2(X,Y) = \frac{2}{m(m-1)} \sum_{j \neq i} k(x_i,x_j) + \frac{2}{m(m-1)} \sum_{j \neq i} k(y_i,y_j) - \frac{4}{m^2} \sum_{i,j} k(x_i,y_j)
     \]
     From this we can define a test statistic:
     \[
