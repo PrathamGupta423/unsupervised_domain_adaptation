@@ -1,0 +1,53 @@
+ Adaptation training
+[0/12870] p: 0.000 d_acc: 0.500, class_loss: 2.340, recon_loss: 0.280, diff_loss: 0.002
+ DANN: SOURCE ACCURACY: 0.515 TARGET ACCURACY: 0.247
+[500/12870] p: 0.039 d_acc: 0.656, class_loss: 0.113, recon_loss: 0.007, diff_loss: 0.001
+ DANN: SOURCE ACCURACY: 0.975 TARGET ACCURACY: 0.623
+[1000/12870] p: 0.078 d_acc: 0.586, class_loss: 0.023, recon_loss: 0.005, diff_loss: 0.001
+ DANN: SOURCE ACCURACY: 0.976 TARGET ACCURACY: 0.674
+[1500/12870] p: 0.117 d_acc: 0.594, class_loss: 0.155, recon_loss: 0.005, diff_loss: 0.001
+ DANN: SOURCE ACCURACY: 0.983 TARGET ACCURACY: 0.715
+[2000/12870] p: 0.155 d_acc: 0.562, class_loss: 0.091, recon_loss: 0.004, diff_loss: 0.001
+ DANN: SOURCE ACCURACY: 0.981 TARGET ACCURACY: 0.721
+[2500/12870] p: 0.194 d_acc: 0.586, class_loss: 0.116, recon_loss: 0.004, diff_loss: 0.001
+ DANN: SOURCE ACCURACY: 0.986 TARGET ACCURACY: 0.743
+[3000/12870] p: 0.233 d_acc: 0.578, class_loss: 0.106, recon_loss: 0.004, diff_loss: 0.001
+ DANN: SOURCE ACCURACY: 0.984 TARGET ACCURACY: 0.725
+[3500/12870] p: 0.272 d_acc: 0.641, class_loss: 0.086, recon_loss: 0.004, diff_loss: 0.001
+ DANN: SOURCE ACCURACY: 0.986 TARGET ACCURACY: 0.765
+[4000/12870] p: 0.311 d_acc: 0.672, class_loss: 0.061, recon_loss: 0.004, diff_loss: 0.001
+ DANN: SOURCE ACCURACY: 0.982 TARGET ACCURACY: 0.771
+[4500/12870] p: 0.350 d_acc: 0.617, class_loss: 0.078, recon_loss: 0.003, diff_loss: 0.001
+ DANN: SOURCE ACCURACY: 0.984 TARGET ACCURACY: 0.785
+[5000/12870] p: 0.389 d_acc: 0.570, class_loss: 0.083, recon_loss: 0.003, diff_loss: 0.001
+ DANN: SOURCE ACCURACY: 0.985 TARGET ACCURACY: 0.780
+[5500/12870] p: 0.427 d_acc: 0.539, class_loss: 0.144, recon_loss: 0.003, diff_loss: 0.001
+ DANN: SOURCE ACCURACY: 0.979 TARGET ACCURACY: 0.778
+[6000/12870] p: 0.466 d_acc: 0.641, class_loss: 0.002, recon_loss: 0.003, diff_loss: 0.001
+ DANN: SOURCE ACCURACY: 0.988 TARGET ACCURACY: 0.794
+[6500/12870] p: 0.505 d_acc: 0.594, class_loss: 0.020, recon_loss: 0.003, diff_loss: 0.001
+ DANN: SOURCE ACCURACY: 0.981 TARGET ACCURACY: 0.775
+[7000/12870] p: 0.544 d_acc: 0.555, class_loss: 0.003, recon_loss: 0.003, diff_loss: 0.001
+ DANN: SOURCE ACCURACY: 0.987 TARGET ACCURACY: 0.792
+[7500/12870] p: 0.583 d_acc: 0.617, class_loss: 0.002, recon_loss: 0.003, diff_loss: 0.001
+ DANN: SOURCE ACCURACY: 0.986 TARGET ACCURACY: 0.798
+[8000/12870] p: 0.622 d_acc: 0.516, class_loss: 0.006, recon_loss: 0.003, diff_loss: 0.001
+ DANN: SOURCE ACCURACY: 0.988 TARGET ACCURACY: 0.808
+[8500/12870] p: 0.660 d_acc: 0.547, class_loss: 0.002, recon_loss: 0.003, diff_loss: 0.001
+ DANN: SOURCE ACCURACY: 0.988 TARGET ACCURACY: 0.805
+[9000/12870] p: 0.699 d_acc: 0.586, class_loss: 0.002, recon_loss: 0.003, diff_loss: 0.001
+ DANN: SOURCE ACCURACY: 0.987 TARGET ACCURACY: 0.806
+[9500/12870] p: 0.738 d_acc: 0.688, class_loss: 0.000, recon_loss: 0.003, diff_loss: 0.001
+ DANN: SOURCE ACCURACY: 0.986 TARGET ACCURACY: 0.800
+[10000/12870] p: 0.777 d_acc: 0.602, class_loss: 0.088, recon_loss: 0.003, diff_loss: 0.001
+ DANN: SOURCE ACCURACY: 0.988 TARGET ACCURACY: 0.817
+[10500/12870] p: 0.816 d_acc: 0.586, class_loss: 0.000, recon_loss: 0.003, diff_loss: 0.001
+ DANN: SOURCE ACCURACY: 0.988 TARGET ACCURACY: 0.821
+[11000/12870] p: 0.855 d_acc: 0.633, class_loss: 0.005, recon_loss: 0.003, diff_loss: 0.001
+ DANN: SOURCE ACCURACY: 0.986 TARGET ACCURACY: 0.802
+[11500/12870] p: 0.894 d_acc: 0.516, class_loss: 0.041, recon_loss: 0.003, diff_loss: 0.001
+ DANN: SOURCE ACCURACY: 0.986 TARGET ACCURACY: 0.807
+[12000/12870] p: 0.932 d_acc: 0.508, class_loss: 0.013, recon_loss: 0.003, diff_loss: 0.001
+ DANN: SOURCE ACCURACY: 0.986 TARGET ACCURACY: 0.817
+[12500/12870] p: 0.971 d_acc: 0.469, class_loss: 0.014, recon_loss: 0.003, diff_loss: 0.001
+ DANN: SOURCE ACCURACY: 0.985 TARGET ACCURACY: 0.816
