@@ -1,0 +1,4 @@
+feature_extractor.pth
+domain_classifier.pth
+descriptor_predictor.pth
+Reidentification_Datasets
