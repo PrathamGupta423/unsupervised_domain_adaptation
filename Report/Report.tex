@@ -34,7 +34,7 @@
 \usepackage{xcolor}         % colors
 \usepackage{multirow}
 \usepackage{graphicx}       % include images
-
+\usepackage{caption}
 
 % Images folder
 
@@ -186,6 +186,67 @@ Similar to DeepCORAL, we also experimented by taking MMD as our divergence metri
 \end{figure}
 
 
+\subsection{Domain Separation Network}
+We have implemented the DSN algorithm and observed its performance in domain adaptation using the MNIST and MNIST-M datasets. Our Resulting accuracy is shown in Table \ref{tab:dsn}. The results are comparable to the results mentioned in the paper. Further more we can also observe the reconstructed images from the DSN model. The reconstructed images are shown in figure \ref{fig:dsn_reconstruction}.
+
+
+
+
+\begin{figure}
+  \centering
+  % First minipage: the table
+  \begin{minipage}[t]{0.45\textwidth}
+    \centering
+    \begin{minipage}[t]{0.95\textwidth}
+      \centering
+      \captionof{table}{Results of DSN on MNIST and MNIST-M Domain Adaptation.}
+      \label{tab:dsn}
+      \begin{tabular}{lc}
+        \toprule
+        \textbf{Method} & \textbf{Accuracy} \\
+        \midrule
+        DSN (Ours) & 81.6\% \\
+        DSN (Paper) & 83.2\% \\
+        \bottomrule
+      \end{tabular}
+    \end{minipage}
+    \vspace{2mm}
+    \begin{minipage}[t]{0.95\textwidth}
+      \vspace{4mm}
+      \centering
+      \begin{minipage}[t]{0.95\textwidth}
+        \centering
+        \includegraphics[width=0.75
+        \linewidth]{DSN/DNS_MNIST_MNISTM.png}
+        \caption{@krishna Put the caption here}
+      \end{minipage}
+    \end{minipage}
+  \end{minipage}%
+  \hfill
+  % Second minipage: the 2x2 image grid
+  \begin{minipage}[t]{0.5\textwidth}
+    \caption{Reconstructed images from DSN.}
+    \label{fig:dsn_reconstruction}
+    \centering
+    \begin{minipage}[t]{0.48\textwidth}
+      \includegraphics[width=\linewidth]{DSN/source.png}
+    \end{minipage}
+    \hfill
+    \begin{minipage}[t]{0.48\textwidth}
+      \includegraphics[width=\linewidth]{DSN/target.png}
+    \end{minipage}
+    \vspace{2mm}
+    \begin{minipage}[t]{0.48\textwidth}
+      \includegraphics[width=\linewidth]{DSN/reconstructed_source.png}
+    \end{minipage}
+    \hfill
+    \begin{minipage}[t]{0.48\textwidth}
+      \includegraphics[width=\linewidth]{DSN/reconstructed_target.png}
+    \end{minipage}
+
+  \end{minipage}
+\end{figure}
+
 
 
 \subsection{Asymmetric Tri-training for Unsupervised Domain Adaptation}
@@ -219,13 +280,8 @@ We have Implement Asymmetric Tri-Training Algorithm and Tested it on MNIST and S
 
 
 
-
-
-
-
-
-
 \section{Conclusion}
+
 
 \section*{Appendix}
 
