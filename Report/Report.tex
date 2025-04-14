@@ -134,9 +134,26 @@ We have used the following datasets\ref{tab:datasets} for our experiments:
 \section{Experiments}
 \subsection{CORAL and DeepCORAL}
 \subsubsection{CORAL}
+CORAL was implemented and tested for basic robustness by creating linearly separable random Gaussian datasets with same and different covariances. This is done for 100 iterations and the average accuracies have been reported in Table \ref{tab:coral}.
+
+\begin{table}[h]
+  \centering
+  \caption{Performance of CORAL on synthetic datasets.}
+  \label{tab:coral}
+  \begin{tabular}{ccc}
+    \toprule
+    \textbf{Dataset Type} & \textbf{Covariance Condition} & \textbf{Accuracy (\%)} \\
+    \midrule
+    Univariate Random & Same Covariance & 100.0 \\
+    Univariate Random & Different Covariance & 100.0 \\
+    Multivariate Normal & Same Covariance & 95.80 \\
+    Multivariate Normal & Different Covariance & 87.39 \\
+    \bottomrule
+  \end{tabular}
+\end{table}
 
 \subsubsection{DeepCORAL}
-We have implemented the DeepCORAL algorithm and observed its performance in domain adaptation using the Office dataset, taking every combination of domains as source and target. The results are shown in Table \ref{tab:deepcoral}. Note that we also compare our results with the results mentioned in the survey paper[]. It is observable that the result for \textbf{W}$\rightarrow$ \textbf{A} is in disagreement with the result in the survey paper by approximately 4\%. The plausible reasons for this discrepancy have been mentioned in the Appendix.
+We have implemented the DeepCORAL algorithm and observed its performance in domain adaptation using the Office dataset, taking every combination of domains as source and target. Our results alongwith the results mentioned in the survey paper[] are shown in Table \ref{tab:deepcoral}. It is observable that the result for \textbf{W}$\rightarrow$ \textbf{A} is in disagreement with the result in the survey paper by approximately 4\% whose major reason was the hyperparameter mismatch and the training time of our implementation from the original approach.
  
 \begin{table*}
   \caption{Classification accuracy (source $\rightarrow$ target) of DeepCORAL on the Office computer vision dataset. A: Amazon, D: DSLR, W: Webcam.}
