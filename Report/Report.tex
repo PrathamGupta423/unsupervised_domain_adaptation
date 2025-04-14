@@ -284,8 +284,8 @@ We implemented the Asymmetric Tri-Training algorithm and tested it on MNIST and 
 
 
 \subsection{Results using DANN Architecture}
-We have implemented the DANN architecture and tested it on a dummy half- moon dataset and compared the results with Normal DNN on various parameters
-Here are the results of the experiments:
+We implemented the DANN architecture and evaluated it on a half-moon dataset, comparing it with a standard DNN. DANN showed poorer domain classification[Figures \ref{fig:domain_decision_vanilla},\ref{fig:domain_decision_dann}], indicating it learns more domain-invariant features.
+We also tested DANN on the Amazon Reviews dataset using the paper’s architecture, training for 1000 epochs. Results closely match the paper (within 5\% deviation), with DANN generally outperforming other methods (Table \ref{tab:DANN_Sentiment}).
 
 % --------- First Row: Standard NN -----------
 \begin{figure}
@@ -338,9 +338,6 @@ Here are the results of the experiments:
 \caption{\small Results for DANN}
 \end{figure}
 
-
-Here, it is easy to see that Label classification for DANN is worse as compared to DNN which shows the features learned by DANN are mare Domain Invariant.Similar conclusions can be drawn from other 2 figures as well. For more details, refer Appendix.
-Second we performed Experiment on Amazon Reviews dataset. We used the same architecture as in the paper and trained it for 1000 epochs. The results are comparable to the results mentioned in the paper(within cap of $5\%$ difference) and in general DANN is performing a little better than the other methods. The results of accuracy on test dataset are shown in Table:
 \begin{table}
   \centering
   % \begin{adjustbox}{max width=\textwidth}
@@ -362,7 +359,7 @@ Second we performed Experiment on Amazon Reviews dataset. We used the same archi
   \end{tabular}
   % \end{adjustbox}
   \caption{Results of DANN, NN, SVM on Amazon Review Dataset compared with paper results.}
-  \label{tab:sample_table}
+  \label{tab:DANN_Sentiment}
 \end{table}
 
 
