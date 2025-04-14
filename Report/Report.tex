@@ -134,7 +134,7 @@ We have used the following datasets\ref{tab:datasets} for our experiments:
 We have implemented the DeepCORAL algorithm and observed its performance in domain adaptation using the Office dataset, taking every combination of domains as source and target. The results are shown in Table \ref{tab:deepcoral}. Note that we also compare our results with the results mentioned in the survey paper[]. It is observable that the result for \textbf{W}$\rightarrow$ \textbf{A} is in disagreement with the result in the survey paper by approximately 4\%. The plausible reasons for this discrepancy have been mentioned in the Appendix.
  
 \begin{table*}
-  \caption{Classification accuracy (source $\rightarrow$ target) of DeepCORAL on the Office computer vision dataset.}
+  \caption{Classification accuracy (source $\rightarrow$ target) of DeepCORAL on the Office computer vision dataset. A: Amazon, D: DSLR, W: Webcam.}
   \label{comparePerformance2}
   \begin{scriptsize}
   \begin{center}
@@ -250,7 +250,7 @@ We have implemented the DSN algorithm and observed its performance in domain ada
 
 
 \subsection{Asymmetric Tri-training for Unsupervised Domain Adaptation}
-We have Implement Asymmetric Tri-Training Algorithm and Tested it on MNIST and SVHN datasets. Results are shown in Table \ref{tab:att_results}. The results are comparable to the results mentioned in the paper. We have also compared our implementation with the implementation of the paper. The results are shown in Table \ref{tab:att_results}. It is observable that our implementation closely matched for training without batch normalization but other experiments then match the implementation of the paper. The plausible reasons for this discrepancy have been mentioned in the Appendix.
+We have Implement Asymmetric Tri-Training Algorithm and Tested it on MNIST and SVHN datasets. Results are shown in Table \ref{tab:att_results}. The results are comparable to the results mentioned in the paper. We have also compared our implementation with the implementation of the paper. The results are shown in Table \ref{tab:att_results}. It is observable that our implementation closely matched for training without batch normalization but other experiments fell short from the implementation of the paper. The plausible reasons for this discrepancy is insufficient training time and hyperparameter tuning.
 \begin{table}
   \centering
   \caption{Results of ATT on MNIST and SVHN Domain Adaptation.}
@@ -282,8 +282,15 @@ We have Implement Asymmetric Tri-Training Algorithm and Tested it on MNIST and S
 
 \section{Conclusion}
 
+In this report, we explored and implemented various state-of-the-art algorithms for Unsupervised Domain Adaptation (UDA), including DANN, CORAL, DeepCORAL, MMD, DSN, and ATT. Through rigorous experimentation across diverse benchmark datasets such as MNIST, SVHN, Office, and Amazon Reviews, we analyzed the performance and adaptability of these methods in different domain shift scenarios.
 
+Our empirical results not only corroborate the findings from existing literature but also provide insights into implementation-level nuances that affect adaptation performance. For instance, our DeepCORAL results matched closely with prior work except for certain domain pairs, highlighting the importance of implementation details and preprocessing steps. Similarly, MMD-based models demonstrated strong distribution alignment capabilities, while DSN provided an interpretable approach via domain-specific reconstructions. For ATT, we observed that our implementation required more fine-tuning and compute resources to match the performance of the original paper, indicating the complexity of ensemble methods in UDA.
+
+Overall, our work provides a comparative perspective on multiple UDA techniques and offers a reproducible framework for future researchers to build upon.
+
+\newpage
 \section*{Appendix}
+
 
 
 
