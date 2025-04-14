@@ -1,0 +1,709 @@
+\documentclass{article}
+
+
+% if you need to pass options to natbib, use, e.g.:
+%     \PassOptionsToPackage{numbers, compress}{natbib}
+% before loading neurips_2023
+
+
+% ready for submission
+\usepackage[preprint]{neurips_2023}
+
+
+% to compile a preprint version, e.g., for submission to arXiv, add add the
+% [preprint] option:
+%     \usepackage[preprint]{neurips_2023}
+
+
+% to compile a camera-ready version, add the [final] option, e.g.:
+%     \usepackage[final]{neurips_2023}
+
+
+% to avoid loading the natbib package, add option nonatbib:
+%    \usepackage[nonatbib]{neurips_2023}
+
+
+\usepackage[utf8]{inputenc} % allow utf-8 input
+\usepackage[T1]{fontenc}    % use 8-bit T1 fonts
+\usepackage{hyperref}       % hyperlinks
+\usepackage{url}            % simple URL typesetting
+\usepackage{booktabs}       % professional-quality tables
+\usepackage{amsfonts}       % blackboard math symbols
+\usepackage{nicefrac}       % compact symbols for 1/2, etc.
+\usepackage{microtype}      % microtypography
+\usepackage{xcolor}         % colors
+\usepackage{multirow}
+\usepackage{graphicx}       % include images
+\usepackage{caption}
+\usepackage{algorithm}
+\usepackage{algorithmic}
+\usepackage{amsmath}
+\usepackage{amssymb}
+\usepackage{amsthm}
+\usepackage{enumitem}
+\usepackage{bm}
+% \usepackage{titlesec}
+\usepackage{geometry}   
+
+% Images folder
+
+
+\title{Unsupervised Domain Adaptation}
+
+
+% The \author macro works with any number of authors. There are two commands
+% used to separate the names and addresses of multiple authors: \And and \AND.
+%
+% Using \And between authors leaves it to LaTeX to determine where to break the
+% lines. Using \AND forces a line break at that point. So, if LaTeX puts 3 of 4
+% authors names on the first line, and the last on the second line, try using
+% \AND instead of \And before the third author name.
+
+
+\author{ Krishna Agarwal\\%\thanks{Use footnote for providing further information
+    %about author (webpage, alternative address)---\emph{not} for acknowledging
+    %funding agencies.} \\
+  Indian Institute of Science, Bangalore\\
+  \texttt{krishnaagarw@iisc.ac.in} \\
+  % examples of more authors
+   \And
+  {Pratham Gupta} \\
+  Indian Institute of Science, Bangalore\\
+  \texttt{prathamgupta@iisc.ac.in} \\
+   \And
+   {Gavish Bansal} \\
+   Indian Institute of Science, Bangalore\\
+   \texttt{gavishbansal@iisc.ac.in} \\
+   \And
+   {Kintan Saha} \\
+   Indian Institute of Science, Bangalore\\
+   \texttt{kintansaha@iisc.ac.in} \\
+  % \And
+  % Coauthor \\
+  % Affiliation \\
+  % Address \\
+  % \texttt{email} \\
+}
+
+
+\begin{document}
+\graphicspath{{./images/}}
+
+\maketitle
+
+
+\begin{abstract}
+  Traditional supervised deep learning assumes that training and test data share the same distribution—an assumption often violated in real-world scenarios. Domain adaptation addresses this issue. In this report, we focus on Unsupervised Domain Adaptation (UDA), where only the source domain is labeled. We implement and evaluate several deep UDA algorithms on benchmark datasets and compare our results with those from the original papers.
+\end{abstract}
+
+
+\section{Introduction}
+Unsupervised Domain Adaptation (UDA) addresses the challenge of training models on a labelled source domain and adapting them to an unlabeled target domain with a different data distribution. In this report, we explore state-of-the-art UDA techniques and their applications in areas such as computer vision and natural language processing. We also reproduce results from influential works \cite{ganin2016domainadversarialtrainingneuralnetworks,survey,Ben-David2010} to deepen our understanding of this field.
+
+\section{Methodology}
+
+\subsection{Algorithms}
+We have implemented the following algorithms for our experiments:[For more details refer appendix]
+\begin{itemize}
+  \item \textbf{DANN (Domain-Adversarial Neural Network)}\cite{ganin2016domainadversarialtrainingneuralnetworks}: Trains the model in an adversarial manner to learn the domain invariant features using a gradient reversal layer and a DNN.
+  \item \textbf{CORAL (Correlation Alignment), DeepCORAL}\cite{Coral,DeepCoral}: CORAL aligns the second-order statistics (covariances) of source and target features. Accordingly, DeepCORAL is an extension of CORAL that integrates correlation alignment into deep neural networks.
+  \item \textbf{MMD (Maximum Mean Discrepancy)}\cite{sutherland2017generative}: A metric that quantifies non-alignment between the source and target distributions. It can be used as a loss function for DNNs.
+  \item \textbf{DSN (Domain Separation Network)}\cite{DSN}: Separates domain-specific and domain-invariant features for better adaptation. A state of the art method for domain invariant feature learning.
+  \item \textbf{ATT (Adversarial Training with Triplet loss)}\cite{pmlr-v70-saito17a}:An ensemble method that utilize two classifier trained on source domain to pseudo-label target domain to learn a classifier for it.
+\end{itemize}
+
+\subsection{Datasets}
+We have used the following datasets\ref{tab:datasets} for our experiments:
+\begin{table}
+  \centering
+  \caption{Benchmark datasets used in our experiments.}
+  \label{tab:datasets}
+  \begin{tabular}{ll}
+      \toprule
+      \textbf{Dataset Category} & \textbf{Datasets} \\
+      \midrule
+      Computer Vision (Numbers)     & MNIST, MNIST-M, SVHN \\
+      Computer Vision (Categorical) & Office: Amazon, DSLR, Webcam \\
+      Sentiment Analysis (Classification)  & Amazon Review Sentiment \\
+      \bottomrule
+  \end{tabular}
+\end{table}
+
+
+\section{Experiments}
+
+
+\subsection{Domain Adversarial Neural Networks (DANN)}
+We implemented the DANN architecture and evaluated it on a half-moon dataset, comparing it with a standard DNN. DANN showed poorer domain classification[Figures \ref{fig:vanilla},\ref{fig:dann}], indicating it learns more domain-invariant features.
+We also tested DANN on the Amazon Reviews dataset using the paper’s architecture, training for 1000 epochs. Results closely match the paper (within 5\% deviation), with DANN generally outperforming other methods (Table \ref{tab:DANN_Sentiment}).
+
+\begin{figure}
+\centering
+\begin{minipage}{0.32\linewidth}
+\centering
+\includegraphics[width=0.7\linewidth]{DANN/label_decision_vanilla.png}
+\caption{\small Label Classification}
+\label{fig:label_decision_vanilla}
+\end{minipage}
+\hfill
+\begin{minipage}{0.32\linewidth}
+\centering
+\includegraphics[width=0.7\linewidth]{DANN/feature_vanilla.png}
+\caption{\small PCA of hidden layer}
+\label{fig:feature_vanilla}
+\end{minipage}
+\hfill
+\begin{minipage}{0.32\linewidth}
+\centering
+\includegraphics[width=0.55\linewidth]{DANN/domain_deciison_vanilla.png}
+\caption{\small Domain Classification}
+\label{fig:domain_decision_vanilla}
+\end{minipage}
+\caption{\small Results for Standard NN}
+\label{fig:vanilla}
+\end{figure}
+
+\begin{figure}
+\centering
+\begin{minipage}{0.32\linewidth}
+\centering
+\includegraphics[width=0.7\linewidth]{DANN/label_decision_dann.png}
+\caption{\small Label Classification}
+\label{fig:label_decision_dann}
+\end{minipage}
+\hfill
+\begin{minipage}{0.32\linewidth}
+\centering
+\includegraphics[width=0.7\linewidth]{DANN/feature_dann.png}
+\caption{\small PCA of hidden layer}
+\label{fig:feature_dann}
+\end{minipage}
+\hfill
+\begin{minipage}{0.32\linewidth}
+\centering
+\includegraphics[width=0.55\linewidth]{DANN/domain_decision_dann.png}
+\caption{\small Domain Classification}
+\label{fig:domain_decision_dann}
+\end{minipage}
+\caption{\small Results for DANN}
+\label{fig:dann}
+\end{figure}
+
+\begin{table}[t]
+  \centering
+  \caption{Results of DANN, NN, and SVM on Amazon Review Dataset compared with results reported in the paper.}
+  \label{tab:DANN_Sentiment}
+  \begin{tabular}{llcccccc}
+    \toprule
+    Source & Target & DANN & NN & SVM & DANN(p) & NN(p) & SVM(p) \\
+    \midrule
+    books & dvd         & \textbf{72.8}\% & \textbf{72.8}\% & 71.95\% & 78.4\% & 79.0\% & \textbf{79.9}\% \\
+    books & electronics & \textbf{70.9}\% & 69.5\% & 69.5\% & 73.3\% & 74.7\% & \textbf{74.8}\% \\
+    books & kitchen     & \textbf{71.85}\% & \textbf{71.85}\% & 71.7\% & \textbf{77.9}\% & 77.8\% & 76.9\% \\
+    dvd   & books       & \textbf{71.55}\% & 66.9\% & 69\% & 72.3\% & 72.0\% & \textbf{74.3}\% \\
+    dvd   & electronics & \textbf{69.8}\% & 69\% & 66.63\% & \textbf{75.4}\% & 73.2\% & 74.8\% \\
+    dvd   & kitchen     & \textbf{70.05}\% & 67.25\% & 69.5\% & \textbf{78.3}\% & 77.8\% & 74.6\% \\
+    electronics & books       & \textbf{65.95}\% & 63.8\% & 65.45\% & \textbf{71.3}\% & 70.9\% & 70.5\% \\
+    electronics & dvd         & \textbf{68.05}\% & 67.15\% & 67\% & \textbf{73.8}\% & 73.3\% & 72.6\% \\
+    electronics & kitchen     & \textbf{79.25}\% & 78.45\% & 78.75\% & \textbf{85.4}\% & \textbf{85.4}\% & 84.7\% \\
+    kitchen & books       & 68.25\% & \textbf{68.75}\% & 68.05\% & \textbf{70.9}\% & 70.8\% & 70.7\% \\
+    kitchen & dvd         & \textbf{68.90}\% & 65.15\% & 68.5\% & \textbf{74.0}\% & 73.9\% & 73.6\% \\
+    kitchen & electronics & 78.75\% & 77.4\% & \textbf{79.25}\% & \textbf{84.3}\% & 84.1\% & 84.2\% \\
+    \bottomrule
+  \end{tabular}
+\end{table}
+
+\subsection{CORAL and DeepCORAL}
+\subsubsection{CORAL}
+CORAL was implemented and tested for basic robustness by synthetic linearly separable random Gaussian datasets with same and different covariances. Results are reported in table\ref{tab:coral}.
+\begin{table}
+  \centering
+  \caption{Performance of CORAL on synthetic datasets. Averaged over 100 iterations.}
+  \label{tab:coral}
+  \begin{tabular}{ccc}
+    \toprule
+    \textbf{Dataset Type} & \textbf{Covariance Condition} & \textbf{Accuracy (\%)} \\
+    \midrule
+    Univariate Random & Same Covariance & 100.0 \\
+    Univariate Random & Different Covariance & 100.0 \\
+    Multivariate Normal & Same Covariance & 95.80 \\
+    Multivariate Normal & Different Covariance & 87.39 \\
+    \bottomrule
+  \end{tabular}
+\end{table}
+
+\subsubsection{DeepCORAL}
+We have implemented the DeepCORAL algorithm and observed its performance on the Office dataset. Our results alongwith the results mentioned in the survey paper[\cite{DeepCoral}] are shown in Table \ref{tab:deepcoral}. It is observable that the result for \textbf{W}$\rightarrow$ \textbf{A} is in slight disagreement of 4\% whose major reason we belive is hyperparameter mismatch and the training time of our implementation from the original approach.
+ 
+\begin{table*}
+  \caption{Classification accuracy (source $\rightarrow$ target) of DeepCORAL on the Office computer vision dataset. A: Amazon, D: DSLR, W: Webcam.}
+  \label{comparePerformance2}
+  \begin{scriptsize}
+  \begin{center}
+  {\renewcommand{\arraystretch}{1.4}
+  \begin{tabular}{@{}l cccccc@{}}
+  \toprule
+  \multicolumn{1}{c}{\multirow{2}{*}{\textbf{Result Source}}} & \multicolumn{6}{c}{\textbf{Office (Amazon, DSLR, Webcam)}} \\
+  \cmidrule{2-7}
+   & \textbf{A $\rightarrow$ W} & \textbf{D $\rightarrow$ W} & \textbf{W $\rightarrow$ D} & \textbf{A $\rightarrow$ D} & \textbf{D $\rightarrow$ A} & \textbf{W $\rightarrow$ A} \\
+  \midrule
+  \textbf{Our Code} & 62.05 & 95.32 & 99.56 & 64.44 & 52.77 & 56.49\\
+  \hline
+  \textbf{Survey Paper} & 66.4$\pm$0.4 & 95.7$\pm$0.3 & 99.2$\pm$0.1 & 66.8$\pm$0.6 & 52.8$\pm$0.2 & 51.5$\pm$0.3\\
+  \bottomrule
+  \end{tabular}
+  }
+  \end{center}
+  \end{scriptsize}
+  \label{tab:deepcoral}
+\end{table*}
+
+\subsection{Maximum Mean Discrepancy}
+Similar to DeepCORAL\cite{DeepCoral}, We experimented with MMD as the divergence metric. We using synthetic datasets and MMD showed strong adaptation ability (Fig \ref{fig:mmd}). It was also effective in  distinguishing between distributions (Figs \ref{fig:mmd_power}, \ref{fig:mmd_example}).
+
+\begin{figure}
+  \centering
+  \begin{minipage}{0.3\textwidth}
+    \centering
+    \includegraphics[width=\textwidth]{MMD/adaptation.png}
+    \caption{Plot of desicion boundary of DNN trained with MMD loss. The decision boundary is shown for the source domain (dots) and target domain (cross).}
+    \label{fig:mmd}
+  \end{minipage}
+  \hfill
+  \begin{minipage}{0.35\textwidth}
+    \centering
+    \includegraphics[width=\textwidth]{MMD/Test_powe_vs_eps.png}
+    \caption{MMD: Test power vs epsilon shows how well MMD can distinguish between distributions vs how much they differ.}
+    \label{fig:mmd_power}
+  \end{minipage}
+  \hfill
+  \begin{minipage}{0.25\textwidth}
+    \centering
+    \includegraphics[width=\textwidth]{MMD/Example.png}
+    \caption{Example of synthetic dataset used in power calculation.}
+    \label{fig:mmd_example}
+  \end{minipage}
+  
+
+\end{figure}
+
+\subsection{Domain Separation Network}
+We implemented the DSN algorithm for domain adaptation on MNIST and MNIST-M. The accuracy (Table \ref{tab:dsn}) is comparable to the original paper, and reconstructed images are shown in Figure \ref{fig:dsn_reconstruction}.
+
+
+\begin{figure}
+  \centering
+  % First minipage: the table
+  \begin{minipage}[t]{0.45\textwidth}
+    \centering
+    \begin{minipage}[t]{0.95\textwidth}
+      \centering
+      \captionof{table}{Results of DSN on MNIST and MNIST-M Domain Adaptation.}
+      \label{tab:dsn}
+      \begin{tabular}{lc}
+        \toprule
+        \textbf{Method} & \textbf{Accuracy} \\
+        \midrule
+        DSN (Ours) & 81.6\% \\
+        DSN (Paper) & 83.2\% \\
+        \bottomrule
+      \end{tabular}
+    \end{minipage}
+    \vspace{2mm}
+    \begin{minipage}[t]{0.95\textwidth}
+      \vspace{4mm}
+      \centering
+      \begin{minipage}[t]{0.95\textwidth}
+        \centering
+        \includegraphics[width=0.6
+        \linewidth]{DSN/DNS_MNIST_MNISTM.png}
+        \caption{@krishna Put the caption here}
+      \end{minipage}
+    \end{minipage}
+  \end{minipage}%
+  \hfill
+  % Second minipage: the 2x2 image grid
+  \begin{minipage}[t]{0.5\textwidth}
+    \caption{Reconstructed images from DSN.}
+    \label{fig:dsn_reconstruction}
+    \centering
+    \begin{minipage}[t]{0.48\textwidth}
+      \includegraphics[width=0.85\linewidth]{DSN/source.png}
+    \end{minipage}
+    \hfill
+    \begin{minipage}[t]{0.48\textwidth}
+      \includegraphics[width=0.85\linewidth]{DSN/target.png}
+    \end{minipage}
+    \vspace{2mm}
+    \begin{minipage}[t]{0.48\textwidth}
+      \includegraphics[width=0.9\linewidth]{DSN/reconstructed_source.png}
+    \end{minipage}
+    \hfill
+    \begin{minipage}[t]{0.48\textwidth}
+      \includegraphics[width=0.9\linewidth]{DSN/reconstructed_target.png}
+    \end{minipage}
+
+  \end{minipage}
+\end{figure}
+
+
+
+
+\subsection{Asymmetric Tri-training for Unsupervised Domain Adaptation}
+We implemented the Asymmetric Tri-Training algorithm and tested it on MNIST and SVHN. Results (Table \ref{tab:att_results}) are comparable to the paper's for the training without batch normalization. Discrepancies in other settings may be due to limited training time and suboptimal hyperparameter tuning.
+\begin{table}
+  \centering
+  \caption{Results of ATT on MNIST and SVHN Domain Adaptation.}
+  \label{tab:att_results}
+  \begin{tabular}{lccc}
+      \toprule
+      \textbf{Method} & \textbf{MNIST\(\to\)SVHN} & \textbf{SVHN \(\to\) MNIST} \\
+      \midrule
+      Our w/o Batch Normalization & 36.9\% & 76.8\% \\
+      Ours w/o Multi-view Loss & 15.2\% & 76.5\% \\
+      Ours  & 15.2\% & 71.4\% \\
+      \midrule
+      Papers w/o Batch Normalization & 39.8\% & 79.8\% \\
+      Papers w/o Multi-view Loss & 49.7\% & 86.0\% \\
+      Papers  & 52.8\% & 85.8\% \\
+      \bottomrule
+  \end{tabular}
+\end{table}
+
+
+
+
+
+% \begin{figure}[h]
+%   \centering
+%   \includegraphics[width=0.5\textwidth]{ATT_Architecture.png}
+%   \caption{ATT Architecture: The feature extractor F takes input from both source and target domain. F1 and F2 are classifiers trained on source domain. Ft is trained on target domain using pseudo-labels from F1 and F2.}
+%   \label{fig:att_architecture}
+% \end{figure}
+
+
+
+\section{Conclusion}
+In this report, we explored and implemented several state-of-the-art unsupervised domain adaptation algorithms across diverse datasets. Our results largely align with those reported in original works, validating both the effectiveness of these methods and our understanding of the underlying principles. This study highlights the importance of domain-invariant representations and provides a foundation for further research in robust model generalization across domains.
+
+
+\newpage
+\section*{Appendix}
+
+
+\subsection{Introduction}
+
+In many machine learning applications, a common issue arises when the distribution of the training data (source domain) differs from the test data (target domain). This phenomenon, known as domain shift, can severely degrade model performance. 
+
+\textbf{Domain adaptation} is a subfield of transfer learning that aims to tackle this problem. Specifically, we will be dealing with Unsupervised domain adaptation and will have access to:
+\begin{itemize}[noitemsep]
+    \item A labeled source domain \( \mathcal{D}_S \) with distribution \( P_S(X, Y) \),
+    \item An unlabeled target domain \( \mathcal{D}_T \) with distribution \( P_T(X, Y) \),
+\end{itemize}
+where \( P_S(X) \neq P_T(X) \). The goal is to learn a model that performs well on \( \mathcal{D}_T \), using labels only from \( \mathcal{D}_S \).
+
+% \section{Domain Adaptation Theory}
+
+% Ben-David et al. (2006, 2010) proposed a generalization bound that directly motivates the DANN framework.
+
+% \subsection{Generalization Bound}
+
+% Let \( h \in \mathcal{H} \) be a hypothesis and let \( \epsilon_T(h) \) and \( \epsilon_S(h) \) be the expected classification errors on target and source domains respectively. Then:
+
+% \begin{equation}
+% \epsilon_T(h) \leq \epsilon_S(h) + \frac{1}{2} d_{\mathcal{H}\Delta\mathcal{H}}(\mathcal{D}_S, \mathcal{D}_T) + \lambda,
+% \label{eq:gen-bound}
+% \end{equation}
+
+% where:
+% \begin{itemize}[noitemsep]
+%     \item \( d_{\mathcal{H}\Delta\mathcal{H}} \) is the symmetric difference hypothesis divergence.
+%     \item \( \lambda = \min_{h \in \mathcal{H}} \left[ \epsilon_S(h) + \epsilon_T(h) \right] \).
+% \end{itemize}
+
+% This bound suggests that to achieve good performance on the target domain, one should:
+% \begin{enumerate}[label=(\alph*)]
+%     \item Minimize the source risk \( \epsilon_S(h) \),
+%     \item Minimize the divergence between the domains.
+% \end{enumerate}
+
+\subsection{H-Divergence and Proxy A-Distance}
+
+To measure distance between domain, we need a metric. And $\mathcal{H}$-Divergence due to its easy to estimate from emperical data is best choice for this metric,
+
+\subsubsection{H-Divergence}
+
+Let \( \mathcal{H} \) be a hypothesis class of binary classifiers. The H-divergence between two marginal distributions \( \mathcal{D}_S^X \) and \( \mathcal{D}_T^X \) is defined as:
+
+\begin{equation}
+d_{\mathcal{H}}(\mathcal{D}_S^X, \mathcal{D}_T^X) = 2 \sup_{h \in \mathcal{H}} \left| \Pr_{x \sim \mathcal{D}_S^X}[h(x) = 1] - \Pr_{x \sim \mathcal{D}_T^X}[h(x) = 1] \right|.
+\end{equation}
+
+For a symmetric hypothesis class ( by symmeric, we mean if $n$ is a classifier in hypothesis class then $1 - n$ is also there in hypothesis class)$\mathcal{H}$, one can compute the \textit{empirical} $\mathcal{H}$-\textit{divergence} between two samples $S \sim (\mathcal{D}_S^X)^n$ and $T \sim (\mathcal{D}_T^X)^{n'}$ by computing
+
+\begin{equation}
+\hat{d}_{\mathcal{H}}(S, T) = 2 \left( 1 - \min_{\eta \in \mathcal{H}} \left[ \frac{1}{n} \sum_{i=1}^{n} \mathbb{I}\left[\eta(x_i) = 0\right] + \frac{1}{n'} \sum_{i=n+1}^{N} \mathbb{I}\left[\eta(x_i) = 1\right] \right] \right),
+\end{equation}
+
+\subsubsection{Proxy A-Distance (PAD)}
+
+Since computing even the emperical H-divergence exactly is difficult, it can be estimated via the \textbf{Proxy A-distance}:
+
+\begin{equation}
+\hat{d_A} = 2(1 - 2\epsilon),
+\end{equation}
+where \( \epsilon \) is the generalization error of a classifier trained to distinguish source from target domain samples.
+\\
+We will furthur see in discussion of "Atheory of learning from different domains" paper that this emperical bound for $\mathcal{H}$-Divergence converges to actual value as number of datapoints increases.
+
+Based on this theory, we will now introduce DANN architecture.
+
+
+
+\subsection{Domain-Adversarial Neural Network (DANN)}
+
+DANN incorporates a domain classifier into a neural network and trains the feature extractor to predict Domain invariant features by continuous feedback(in terms of gradient) by gradient reversal layer and simultaneously train on source dataset to learn actual labels.
+
+\subsubsection{Architecture}
+
+The DANN consists of three components:
+\begin{enumerate}[noitemsep]
+    \item A feature extractor \( G_f(x; \theta_f) \),
+    \item A label predictor \( G_y(G_f(x); \theta_y) \),
+    \item A domain classifier \( G_d(G_f(x); \theta_d) \).
+\end{enumerate}
+
+\begin{center}
+\includegraphics[width=0.8\textwidth]{DANN/DANN_img.png}
+\end{center}
+
+\textbf{Optimization Objective}
+
+We define a joint loss:
+
+\begin{align}
+E(\theta_f, \theta_y, \theta_d) &= \frac{1}{n} \sum_{i=1}^{n} \mathcal{L}_y(G_y(G_f(x_i^s)), y_i^s) \nonumber \\
+&\quad - \lambda \left( \frac{1}{n} \sum_{i=1}^{n} \mathcal{L}_d(G_d(G_f(x_i^s)), 0) + \frac{1}{m} \sum_{j=1}^{m} \mathcal{L}_d(G_d(G_f(x_j^t)), 1) \right).
+\label{eq:objective}
+\end{align}
+
+This results in a saddle point problem:
+\begin{align}
+(\hat{\theta}_f, \hat{\theta}_y) &= \arg \min_{\theta_f, \theta_y} E(\theta_f, \theta_y, \hat{\theta}_d), \\
+\hat{\theta}_d &= \arg \max_{\theta_d} E(\hat{\theta}_f, \hat{\theta}_y, \theta_d).
+\end{align}
+
+The first update is to learn domain invariant features and the required classifier whereas the second update is to learn domain classifier.
+
+\textbf{Gradient Updates}
+
+Using stochastic gradient descent, the updates are:
+
+\begin{align}
+\theta_f &\leftarrow \theta_f - \mu \left( \frac{\partial \mathcal{L}_y}{\partial \theta_f} - \lambda \frac{\partial \mathcal{L}_d}{\partial \theta_f} \right), \\
+\theta_y &\leftarrow \theta_y - \mu \frac{\partial \mathcal{L}_y}{\partial \theta_y}, \\
+\theta_d &\leftarrow \theta_d - \mu \lambda \frac{\partial \mathcal{L}_d}{\partial \theta_d}.
+\end{align}
+
+\subsubsection{Gradient Reversal Layer Working}
+
+To simplify implementation, the adversarial optimization is performed via a custom layer called the Gradient Reversal Layer (GRL).
+
+\subsubsubsection{Definition}
+
+Let \( R(x) \) denote the GRL. It has the following behavior:
+\begin{align}
+\text{Forward pass:} \quad &R(x) = x, \\
+\text{Backward pass:} \quad &\frac{dR}{dx} = -\lambda I.
+\end{align}
+
+During backpropagation, GRL multiplies the gradient by \(-\lambda\), reversing the gradient direction and forcing the feature extractor to generate domain-invariant features.
+
+\subsubsection{Theoretical Implications}
+
+DANN effectively minimizes the upper bound of Target Error which we will discuss while discussing "Atheory of learning from different domains" paper. Through the adversarial training:
+\begin{itemize}[noitemsep]
+    \item The source classification loss \( \epsilon_S \) is minimized.
+    \item The domain classifier's inability to distinguish domains implies low \( d_{\mathcal{H}\Delta\mathcal{H}} \).
+\end{itemize}
+
+Thus, under the assumption of low \( \lambda \), DANN is expected to generalize well on the target domain.
+
+
+\subsubsection{Struggle Through Experiments}
+Most of the experiment are giving a good results with result quite close to the results in paper yet there is an experiment for which we tried a lot but not giving acceptable results,\\
+In experiments with Deep Image Descriptors for Re-Identification, We tried to adapt to ViPER dataset with source dataset as PRiM dataset. The basic task of the experiment is to learn the matching between images taken by differnt cameras through different angles, diferent times of day etc.
+for that we try to learn an embedding of images and then calculated the cosine similarities between images to capture how related are they and then compared with matrix of size $n*n$ where n is batch size where $(i,j)^{th}$ element of this matrix is 1 iff that image is of same person.
+Now, we used Binomial Deviance Loss, To capture the loss corresponding to distance between Those two matrices described above.Also we are using Cross-Entropy Loss to capture the domain classification part of it and then applying backpropagation to learn parameters.\\
+But on designing such architechure, and running on our dataset we observed that domain classification loss is not getting updated after certain number of steps. We thoutght of this problem being caused due to Relu activation function due to its zero grad on negative side. So we replaced Relu with Tanh activation function but still it was not updating domain loss that often, Then we decided to increase the number of layer and change hyperparameters, but still the results were not that good so we then go for fully connected layer instead of splitting it into two parts. We also tried changing the loss function but not able to get good results.
+
+\subsubsection{Successful Experiments}
+First successful experiment performed in DANN paper was the half moon experiment where we created dummy dataset of labelled points as shown(??) and then unlabelled target domain rotated by an angle of $35\deg$ . We calculated the results for both DANN and normal NN architecture. Observing the label classification graph of both experiments, we can say that classification boundary of labels for DANN more or less also capturing the structure of Target dataset. Similarly consider the PCA representation of hidden layer, in case of DANN target and source representation we embedded within each other quite well as compared to DNN were all black dots tend to remain in small cluster near boundaries of source representation. That shows the Domain Invariant features being learnt by DANN architecture. Similar conclusions can be drawn with domain classification images.
+\\
+Second we performed Sentiment analysis task on Amazon review dataset which is having domains as:
+books, dvd, electronics, kitchen\\
+We performed Domain adaptation task on each possible piar with 1000 epochs and compared its results with DNN and SVM. The final conclusion was that on most of the domain transfers DANN was performing better as compared to Other two algorithms.\\
+Corresponding table can be seen here(??).
+\\ 
+Next we performed the domain adaptation taskfrom MNIST dataset to MNIST-M dataset and got expected results.
+
+\subsubsection{Conclusion}
+
+The DANN framework stands as a principled and practical method for unsupervised domain adaptation. Grounded in domain adaptation theory, it achieves the minimization of target error by aligning feature distributions through adversarial training. The elegance of DANN lies in its simplicity and the minimal architectural modifications required to integrate domain adaptation directly into a standard feed-forward neural network.
+
+
+\subsection*{Maximum Mean Discrepancy}
+\subsubsection*{Theory}
+Maximum Mean Discrepancy (MMD) is a statistical test used to measure the distance between two probability distributions. It is particularly useful in domain adaptation tasks where the goal is to align the feature distributions of the source and target domains. MMD computes the distance between the means of the two distributions in a reproducing kernel Hilbert space (RKHS). The MMD can be expressed mathematically as:
+\[
+  \text{MMD}^2(P, Q) = \left\| \frac{1}{m} \sum_{i=1}^{m} \phi(x_i) - \frac{1}{n} \sum_{j=1}^{n} \phi(y_j) \right\|^2_{\mathcal{H}}
+\]
+where \(P\) and \(Q\) are the two distributions, \(\phi\) is a feature map that maps the data into a high-dimensional space, and \(\mathcal{H}\) is the RKHS. The MMD can be computed using a kernel function, such as the Gaussian kernel, which allows for efficient computation in high-dimensional spaces. 
+Formula for MMD is given as:
+\[
+  \text{MMD}^2(P, Q) = \mathbb{E}_{x,x'}[k(x,x')] + \mathbb{E}_{y,y'}[k(y,y')] - 2\mathbb{E}_{x,y}[k(x,y)]
+\]
+where \(k\) is the kernel function, and \(x\) and \(y\) are samples from the distributions \(P\) and \(Q\), respectively. 
+
+An empirical estimate of MMD can be computed using the following formula:
+\[
+  \widehat{\text{MMD}}^2(P, Q) = \frac{1}{m(m-1)} \sum_{i=1}^{m} \sum_{j \neq i}^{m} k(x_i, x_j) + \frac{1}{n(n-1)} \sum_{i=1}^{n} \sum_{j \neq i}^{n} k(y_i, y_j) - \frac{2}{mn} \sum_{i=1}^{m} \sum_{j=1}^{n} k(x_i, y_j)
+\]
+From this we can define the test statistic as:
+\[
+  T = \frac{\widehat{\text{MMD}}^2(X,Y)}{\sqrt{\hat{V_m}(X,Y)}}
+\]
+where \(\widehat{V_m}(X,Y)\) is the variance of the MMD estimate. The null hypothesis is that the two distributions are equal, and the alternative hypothesis is that they are different. The test statistic \(T\) follows a standard normal distribution under alternate hypothesis \(H_1: P \neq Q\).
+
+\[
+  \frac{\widehat{\text{MMD}^2}_U(X,Y) - \text{MMD}^2(P,Q)}{\sqrt(T_m(P,Q))} \xrightarrow{d} \mathcal{N}(0,1)
+\]
+
+\subsubsection*{Implementation}
+\textbf{Experiments of MMD as a divergence metric:}\\
+We Implemented unbiased estimator of MMD and then generated blob data with different distributions. P and Q are \(5 \times 5\) grid of gaussian blobs where covariance of blobs are given by: \\
+\begin{minipage}{0.45\linewidth}
+\[
+  P_{cov} = \begin{bmatrix}
+    1 & 0 \\
+    0 & 1
+  \end{bmatrix}\sigma^2
+\]
+\end{minipage}
+\hfill
+\begin{minipage}{0.45\linewidth}
+\[
+  Q_{cov}(\epsilon) = \begin{bmatrix}
+    1 & \frac{\epsilon-1}{\epsilon+1} \\
+    \frac{\epsilon-1}{\epsilon+1} & 1
+  \end{bmatrix} \sigma^2
+\]
+\end{minipage}
+
+For a visual demonstration, Figure \ref{fig:mmd_example} shows an example where P has blobs of isotropic Gaussian distribution (blue dots) and Q has blobs of elliptical Gaussian distribution (orange dots) with \(\epsilon = 6\). 
+
+To test the power of test statistic used the following procedure:
+\begin{enumerate}
+  \item For n trials, generate samples from P and Q.
+  \item Compute the MMD statistic for each trial.
+  \item Now intialize an empty array for null-statistics.
+  \item For m permutations of combined data of P and Q , take X as first half and Y as second half and compute the MMD statistic and append it to null-statistics.
+  \item Now we take the 95th percentile of null-statistics and compare it with the MMD statistic.
+  \item If MMD statistic is greater than the 95th percentile of null-statistics, we reject the null hypothesis.
+  \item Compute the power of the test as the proportion of trials where the null hypothesis was rejected.
+  \item Repeat the above steps for different values of \(\epsilon\) and plot the power of the test against \(\epsilon\). 
+\end{enumerate}
+We have plotted the power of the test against \(\sigma\) in figure \ref{fig:mmd_power}. Where \(\sigma\) is the hyperparameter of the gaussian kernel. The plot shows the followin:
+\begin{itemize}
+  \item As \(\epsilon\) increases, the rejection ratio also increase which is expected as the distributions become more different.
+  \item There is an optimal value of sigma for which the power of the test is maximum. This is because if sigma is too small, the MMD statistic will be too small to detect the difference between the distributions. If sigma is too large, the MMD statistic will be too large and will not be able to detect the difference between the distributions.
+\end{itemize}
+
+\textbf{MMD in Domain Adaptation:}\\
+We used MMD as a divergence metric to train feature extractor and classifier. We tested it on Synthetic Moons data where target domain was rotated by 30 degrees. The feature extractor is a DNN with 2 hidden layers and ReLU activations. The classifier is a fully connected layer with softmax activation. The loss function is the sum of the cross-entropy loss and the MMD loss:
+\[
+  \mathcal{L}(\theta_F, \theta_C) = \mathcal{L}_{CE}(C(F(x_s)), y_s) + \lambda \cdot \text{MMD}^2(F(x_s), F(x_t))
+\]
+where \(\mathcal{L}_{CE}\) is the cross-entropy loss, \(C\) is the classifier, \(F\) is the feature extractor, and \(\lambda\) is a hyperparameter that controls the trade-off between the two losses. The MMD loss encourages the feature distributions of the source and target domains to be similar, thereby improving the model's performance on the target domain.
+We trained the model 1200 epochs and used \(\lambda = 0.5\) and optimizer was Adam with learning rate of 0.001. Image of the decision boundary is shown in figure \ref{fig:mmd}.
+
+
+\subsection*{Asymmetric Tri-training for Unsupervised Domain Adaptation}
+\subsubsection*{Theory}
+The Asymmetric Tri-training algorithm is a domain adaptation method that leverages multiple classifiers to improve the performance of a model on a target domain. The key idea is to use two classifiers trained on the source domain to generate pseudo-labels for the target domain, and then use these pseudo-labels to train a third classifier. 
+
+The algorithm works in three main steps:
+
+\begin{enumerate}
+  \item \textbf{Source Domain Training}: Two classifiers (F1 and F2) are trained on labeled source domain data.
+  
+  \item \textbf{Pseudo-labeling}: F1 and F2 are used to predict labels for unlabeled target domain data. Only instances where both classifiers agree with high confidence are selected for pseudo-labeling.
+  
+  \item \textbf{Target Classifier Training}: A third classifier (Ft) is trained on the pseudo-labeled target domain data, incorporating a multi-view loss to ensure consistency between predictions.
+\end{enumerate}
+
+Complete Architecture is shown in figure \ref{fig:att_architecture}.
+
+\textbf{Loss Functions:}\\
+ The loss function for Source domain training is the cross-entropy loss + multi-view loss:
+\[
+  \mathcal{L}(\theta_F, \theta_{F_1}, \theta_{F_2}) = \mathcal{L}_{CE}(F_1(x_s), {y}_s) + 
+  \mathcal{L}_{CE}(F_2(x_s), {y}_s) + \lambda
+  \|W_1^T W_2\|
+\]
+The loss function for Target domain training is the cross-entropy loss:
+\[
+  \mathcal{L}(\theta_F, \theta_{F_t}) = \mathcal{L}_{CE}(F_t(x_t), \hat{y}_t)
+\]
+
+\begin{figure}
+  \centering
+  \includegraphics[width=0.8\textwidth]{ATT/ATT_Architecture.png}
+  \caption{ATT Architecture: The feature extractor F processes inputs from both domains. F1 and F2 are source-trained classifiers that generate pseudo-labels for training Ft on the target domain.}
+  \label{fig:att_architecture}
+\end{figure}
+
+\subsubsection*{Pseudocode}
+\begin{algorithm}
+\caption{Asymmetric Tri-training}
+\begin{algorithmic}[1]
+\STATE \textbf{Input:} Source data $X_s = \{(x_i, t_i)\}_{i=1}^m$, Target data $X_t = \{(x_j)\}_{j=1}^n$
+\STATE $X_t^l = \emptyset$ \COMMENT{Initialize labeled target set}
+\FOR{$j = 1$ to $iter$}
+  \STATE Train $F, F_1, F_2, F_t$ with mini-batch from training set $S$
+\ENDFOR
+\STATE $N_t = N_{init}$
+\STATE $X_t^l = \text{Labeling}(F, F_1, F_2, X_t, N_t)$
+\STATE $L = X_s \cup X_t^l$
+\FOR{$K$ steps}
+  \FOR{$j = 1$ to $iter$}
+    \STATE Train $F, F_1, F_2$ with mini-batch from training set $L$
+    \STATE Train $F, F_t$ with mini-batch from training set $X_t^l$
+  \ENDFOR
+  \STATE $X_t^l = \emptyset$, $N_t = K/20 * n$
+  \STATE $X_t^l = \text{Labeling}(F, F_1, F_2, X_t, N_t)$
+  \STATE $L = X_s \cup X_t^l$
+\ENDFOR
+\end{algorithmic}
+\end{algorithm}
+
+\subsection*{Implementation Details}
+We implemented the Asymmetric Tri-training algorithm using PyTorch. The model architecture (fig\ref{fig:att_implementation}) consists of a feature extractor followed by three classifiers. The feature extractor is a convolutional neural network (CNN) for image data, while the classifiers are fully connected layers. We used momentum SDG with a learning rate of 0.01 and momentum 0.9 and a batch size of 128. Lamda was set to 0.01 for the multi-view loss. We trained for 20 iters and value of K as 50. This computation required 2-3 hours of training time on GPU hence we were not able to train it for the recommened 2000 iterations as mentioned in the paper. Which we believe is the reason for the discrepancy in results as compared to the paper.
+\begin{figure}[h]
+  \centering
+  \includegraphics[width=0.8\textwidth]{ATT/Imp_acc.png}
+  \caption{Architecture used for SVHN-MNIST domain adaptation. The feature extractor is a CNN with batch normalization in the last convolutional layer, and the classifiers are fully connected layers with batch normalization and dropout.}
+  \label{fig:att_implementation}
+\end{figure}
+
+\section*{Acknowledgements}
+We would like to express our sincere gratitude to Prof. Chiranjib Bhattacharyya and Prof. Shishir N. Y. Kolathaya for offering the course UMC203, which provided us with a strong foundation that greatly helped us in the preparation of this report. We are especially thankful to our TA, Pranav K. Nayak, for his guidance, prompt support, and constructive feedback throughout the project. This project would not have been possible without the intellectually stimulating environment fostered by the instructors and the TA.
+
+% \section*{References}
+\bibliographystyle{unsrt}
+\bibliography{references}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+
+\end{document}
