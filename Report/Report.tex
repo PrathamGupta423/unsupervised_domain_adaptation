@@ -7,7 +7,7 @@
 
 
 % ready for submission
-\usepackage{neurips_2023}
+\usepackage[preprint]{neurips_2023}
 
 
 % to compile a preprint version, e.g., for submission to arXiv, add add the
@@ -99,7 +99,7 @@ Unsupervised Domain Adaptation (UDA) addresses the challenge of training models 
 \section{Methodology}
 
 \subsection{Algorithms}
-We have implemented the following algorithms for our experiments:
+We have implemented the following algorithms for our experiments:[For more details refer appendix]
 \begin{itemize}
   \item \textbf{DANN (Domain-Adversarial Neural Network)}\cite{ganin2016domainadversarialtrainingneuralnetworks}: Trains the model in an adversarial manner to learn the domain invariant features using a gradient reversal layer and a DNN.
   \item \textbf{CORAL (Correlation Alignment), DeepCORAL}\cite{Coral,DeepCoral}: CORAL aligns the second-order statistics (covariances) of source and target features. Accordingly, DeepCORAL is an extension of CORAL that integrates correlation alignment into deep neural networks.
@@ -127,6 +127,88 @@ We have used the following datasets\ref{tab:datasets} for our experiments:
 
 
 \section{Experiments}
+
+
+\subsection{Results using DANN Architecture}
+We implemented the DANN architecture and evaluated it on a half-moon dataset, comparing it with a standard DNN. DANN showed poorer domain classification[Figures \ref{fig:vanilla},\ref{fig:dann}], indicating it learns more domain-invariant features.
+We also tested DANN on the Amazon Reviews dataset using the paper’s architecture, training for 1000 epochs. Results closely match the paper (within 5\% deviation), with DANN generally outperforming other methods (Table \ref{tab:DANN_Sentiment}).
+
+\begin{figure}
+\centering
+\begin{minipage}{0.32\linewidth}
+\centering
+\includegraphics[width=0.7\linewidth]{DANN/label_decision_vanilla.png}
+\caption{\small Label Classification}
+\label{fig:label_decision_vanilla}
+\end{minipage}
+\hfill
+\begin{minipage}{0.32\linewidth}
+\centering
+\includegraphics[width=0.7\linewidth]{DANN/feature_vanilla.png}
+\caption{\small PCA of hidden layer}
+\label{fig:feature_vanilla}
+\end{minipage}
+\hfill
+\begin{minipage}{0.32\linewidth}
+\centering
+\includegraphics[width=0.55\linewidth]{DANN/domain_deciison_vanilla.png}
+\caption{\small Domain Classification}
+\label{fig:domain_decision_vanilla}
+\end{minipage}
+\caption{\small Results for Standard NN}
+\label{fig:vanilla}
+\end{figure}
+
+\begin{figure}
+\centering
+\begin{minipage}{0.32\linewidth}
+\centering
+\includegraphics[width=0.7\linewidth]{DANN/label_decision_dann.png}
+\caption{\small Label Classification}
+\label{fig:label_decision_dann}
+\end{minipage}
+\hfill
+\begin{minipage}{0.32\linewidth}
+\centering
+\includegraphics[width=0.7\linewidth]{DANN/feature_dann.png}
+\caption{\small PCA of hidden layer}
+\label{fig:feature_dann}
+\end{minipage}
+\hfill
+\begin{minipage}{0.32\linewidth}
+\centering
+\includegraphics[width=0.55\linewidth]{DANN/domain_decision_dann.png}
+\caption{\small Domain Classification}
+\label{fig:domain_decision_dann}
+\end{minipage}
+\caption{\small Results for DANN}
+\label{fig:dann}
+\end{figure}
+
+\begin{table}[t]
+  \centering
+  \caption{Results of DANN, NN, and SVM on Amazon Review Dataset compared with results reported in the paper.}
+  \label{tab:DANN_Sentiment}
+  \begin{tabular}{llcccccc}
+    \toprule
+    Source & Target & DANN & NN & SVM & DANN(p) & NN(p) & SVM(p) \\
+    \midrule
+    books & dvd         & \textbf{72.8}\% & \textbf{72.8}\% & 71.95\% & 78.4\% & 79.0\% & \textbf{79.9}\% \\
+    books & electronics & \textbf{70.9}\% & 69.5\% & 69.5\% & 73.3\% & 74.7\% & \textbf{74.8}\% \\
+    books & kitchen     & \textbf{71.85}\% & \textbf{71.85}\% & 71.7\% & \textbf{77.9}\% & 77.8\% & 76.9\% \\
+    dvd   & books       & \textbf{71.55}\% & 66.9\% & 69\% & 72.3\% & 72.0\% & \textbf{74.3}\% \\
+    dvd   & electronics & \textbf{69.8}\% & 69\% & 66.63\% & \textbf{75.4}\% & 73.2\% & 74.8\% \\
+    dvd   & kitchen     & \textbf{70.05}\% & 67.25\% & 69.5\% & \textbf{78.3}\% & 77.8\% & 74.6\% \\
+    electronics & books       & \textbf{65.95}\% & 63.8\% & 65.45\% & \textbf{71.3}\% & 70.9\% & 70.5\% \\
+    electronics & dvd         & \textbf{68.05}\% & 67.15\% & 67\% & \textbf{73.8}\% & 73.3\% & 72.6\% \\
+    electronics & kitchen     & \textbf{79.25}\% & 78.45\% & 78.75\% & \textbf{85.4}\% & \textbf{85.4}\% & 84.7\% \\
+    kitchen & books       & 68.25\% & \textbf{68.75}\% & 68.05\% & \textbf{70.9}\% & 70.8\% & 70.7\% \\
+    kitchen & dvd         & \textbf{68.90}\% & 65.15\% & 68.5\% & \textbf{74.0}\% & 73.9\% & 73.6\% \\
+    kitchen & electronics & 78.75\% & 77.4\% & \textbf{79.25}\% & \textbf{84.3}\% & 84.1\% & 84.2\% \\
+    \bottomrule
+  \end{tabular}
+\end{table}
+
 \subsection{CORAL and DeepCORAL}
 \subsubsection{CORAL}
 CORAL was implemented and tested for basic robustness by synthetic linearly separable random Gaussian datasets with same and different covariances. Results are reported in table\ref{tab:coral}.
@@ -204,6 +286,7 @@ Similar to DeepCORAL\cite{DeepCoral}, We experimented with MMD as the divergence
 \subsection{Domain Separation Network}
 We implemented the DSN algorithm for domain adaptation on MNIST and MNIST-M. The accuracy (Table \ref{tab:dsn}) is comparable to the original paper, and reconstructed images are shown in Figure \ref{fig:dsn_reconstruction}.
 
+
 \begin{figure}
   \centering
   % First minipage: the table
@@ -228,7 +311,7 @@ We implemented the DSN algorithm for domain adaptation on MNIST and MNIST-M. The
       \centering
       \begin{minipage}[t]{0.95\textwidth}
         \centering
-        \includegraphics[width=0.75
+        \includegraphics[width=0.6
         \linewidth]{DSN/DNS_MNIST_MNISTM.png}
         \caption{@krishna Put the caption here}
       \end{minipage}
@@ -241,23 +324,24 @@ We implemented the DSN algorithm for domain adaptation on MNIST and MNIST-M. The
     \label{fig:dsn_reconstruction}
     \centering
     \begin{minipage}[t]{0.48\textwidth}
-      \includegraphics[width=\linewidth]{DSN/source.png}
+      \includegraphics[width=0.85\linewidth]{DSN/source.png}
     \end{minipage}
     \hfill
     \begin{minipage}[t]{0.48\textwidth}
-      \includegraphics[width=\linewidth]{DSN/target.png}
+      \includegraphics[width=0.85\linewidth]{DSN/target.png}
     \end{minipage}
     \vspace{2mm}
     \begin{minipage}[t]{0.48\textwidth}
-      \includegraphics[width=\linewidth]{DSN/reconstructed_source.png}
+      \includegraphics[width=0.9\linewidth]{DSN/reconstructed_source.png}
     \end{minipage}
     \hfill
     \begin{minipage}[t]{0.48\textwidth}
-      \includegraphics[width=\linewidth]{DSN/reconstructed_target.png}
+      \includegraphics[width=0.9\linewidth]{DSN/reconstructed_target.png}
     \end{minipage}
 
   \end{minipage}
 \end{figure}
+
 
 
 
@@ -283,84 +367,6 @@ We implemented the Asymmetric Tri-Training algorithm and tested it on MNIST and 
 \end{table}
 
 
-\subsection{Results using DANN Architecture}
-We implemented the DANN architecture and evaluated it on a half-moon dataset, comparing it with a standard DNN. DANN showed poorer domain classification[Figures \ref{fig:domain_decision_vanilla},\ref{fig:domain_decision_dann}], indicating it learns more domain-invariant features.
-We also tested DANN on the Amazon Reviews dataset using the paper’s architecture, training for 1000 epochs. Results closely match the paper (within 5\% deviation), with DANN generally outperforming other methods (Table \ref{tab:DANN_Sentiment}).
-
-% --------- First Row: Standard NN -----------
-\begin{figure}
-\centering
-\begin{minipage}{0.32\linewidth}
-\centering
-\includegraphics[width=0.7\linewidth]{DANN/label_decision_vanilla.png}
-\caption{\small Label Classification}
-\label{fig:label_decision_vanilla}
-\end{minipage}
-\hfill
-\begin{minipage}{0.32\linewidth}
-\centering
-\includegraphics[width=0.7\linewidth]{DANN/feature_vanilla.png}
-\caption{\small PCA of hidden layer}
-\label{fig:feature_vanilla}
-\end{minipage}
-\hfill
-\begin{minipage}{0.32\linewidth}
-\centering
-\includegraphics[width=0.55\linewidth]{DANN/domain_deciison_vanilla.png}
-\caption{\small Domain Classification}
-\label{fig:domain_decision_vanilla}
-\end{minipage}
-\caption{\small Results for Standard NN}
-\end{figure}
-
-\begin{figure}
-\centering
-\begin{minipage}{0.32\linewidth}
-\centering
-\includegraphics[width=0.7\linewidth]{DANN/label_decision_dann.png}
-\caption{\small Label Classification}
-\label{fig:label_decision_dann}
-\end{minipage}
-\hfill
-\begin{minipage}{0.32\linewidth}
-\centering
-\includegraphics[width=0.7\linewidth]{DANN/feature_dann.png}
-\caption{\small PCA of hidden layer}
-\label{fig:feature_dann}
-\end{minipage}
-\hfill
-\begin{minipage}{0.32\linewidth}
-\centering
-\includegraphics[width=0.55\linewidth]{DANN/domain_decision_dann.png}
-\caption{\small Domain Classification}
-\label{fig:domain_decision_dann}
-\end{minipage}
-\caption{\small Results for DANN}
-\end{figure}
-
-\begin{table}
-  \centering
-  % \begin{adjustbox}{max width=\textwidth}
-  \begin{tabular}{|c|c|c|c|c|c|c|c|}
-  \hline
-  Source & Target & DANN & NN & SVM & DANN(p) & NN(p) & SVM(p) \\ \hline
-  books & dvd & \textbf{72.8}\% & \textbf{72.8}\% & 71.95\% & 78.4\% & 79.0\% & \textbf{79.9}\% \\ \hline
-  books & electronics & \textbf{70.9}\% & 69.5\% & 69.5\% & 73.3\% & 74.7\% & \textbf{74.8}\% \\ \hline
-  books & kitchen & \textbf{71.85}\% & \textbf{71.85}\% & 71.7\% & \textbf{77.9}\% & 77.8\% & 76.9\% \\ \hline
-  dvd & books & \textbf{71.55}\% & 66.9\% & 69\% & 72.3\% & 72.0\% & \textbf{74.3}\% \\ \hline
-  dvd & electronics & \textbf{69.8}\% & 69\% & 66.63\% & \textbf{75.4}\% & 73.2\% & 74.8\% \\ \hline
-  dvd & kitchen & \textbf{70.05}\% & 67.25\% & 69.5\% & \textbf{78.3}\% & 77.8\% & 74.6\% \\ \hline
-  electronics & books & \textbf{65.95}\% & 63.8\% & 65.45\% & \textbf{71.3}\% & 70.9\% & 70.5\% \\ \hline
-  electronics & dvd & \textbf{68.05}\% & 67.15\% & 67\% & \textbf{73.8}\% & 73.3\% & 72.6\% \\ \hline
-  electronics & kitchen & \textbf{79.25}\% & 78.45\% & 78.75\% & \textbf{85.4}\% & \textbf{85.4}\% & 84.7\% \\ \hline
-  kitchen & book & 68.25\% & \textbf{68.75}\% & 68.05\% & \textbf{70.9}\% & 70.8\% & 70.7\% \\ \hline
-  kitchen & dvd & \textbf{68.90}\% & 65.15\% & 68.5\% & \textbf{74.0}\% & 73.9\% & 73.6\% \\ \hline
-  kitchen & electronics & 78.75\% & 77.4\% & \textbf{79.25}\% & \textbf{84.3}\% & 84.1\% & 84.2\% \\ \hline
-  \end{tabular}
-  % \end{adjustbox}
-  \caption{Results of DANN, NN, SVM on Amazon Review Dataset compared with paper results.}
-  \label{tab:DANN_Sentiment}
-\end{table}
 
 
 
@@ -375,11 +381,7 @@ We also tested DANN on the Amazon Reviews dataset using the paper’s architectu
 
 \section{Conclusion}
 
-In this report, we explored and implemented various state-of-the-art algorithms for Unsupervised Domain Adaptation (UDA), including DANN, CORAL, DeepCORAL, MMD, DSN, and ATT. Through rigorous experimentation across diverse benchmark datasets such as MNIST, SVHN, Office, and Amazon Reviews, we analyzed the performance and adaptability of these methods in different domain shift scenarios.
-
-Our empirical results not only corroborate the findings from existing literature but also provide insights into implementation-level nuances that affect adaptation performance. For instance, our DeepCORAL results matched closely with prior work except for certain domain pairs, highlighting the importance of implementation details and preprocessing steps. Similarly, MMD-based models demonstrated strong distribution alignment capabilities, while DSN provided an interpretable approach via domain-specific reconstructions. For ATT, we observed that our implementation required more fine-tuning and compute resources to match the performance of the original paper, indicating the complexity of ensemble methods in UDA.
-
-Overall, our work provides a comparative perspective on multiple UDA techniques and offers a reproducible framework for future researchers to build upon.
+In this report, we explored and implemented several state-of-the-art unsupervised domain adaptation algorithms across diverse datasets. Our results largely align with those reported in original works, validating both the effectiveness of these methods and our understanding of the underlying principles. This study highlights the importance of domain-invariant representations and provides a foundation for further research in robust model generalization across domains.
 
 \newpage
 \section*{Appendix}
