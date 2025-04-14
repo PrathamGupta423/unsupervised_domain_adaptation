@@ -1,0 +1,20 @@
+name: MMD
+channels:
+  - nvidia
+  - pytorch
+  - conda-forge
+  - defaults
+dependencies:
+  - python=3.12.8
+  - pytorch
+  - torchvision
+  - torchaudio
+  - pytorch-cuda=11.8
+  - numpy
+  - scikit-learn
+  - scipy
+  - scikit-image
+  - matplotlib
+  - seaborn
+  - tqdm
+  - joblib
