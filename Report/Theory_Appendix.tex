@@ -1,0 +1,174 @@
+\documentclass{article}
+\usepackage{amsmath}
+\usepackage{amssymb}
+\usepackage{graphicx}
+\usepackage{geometry}
+\usepackage{media9}
+\geometry{a4paper, margin=1in}
+
+\title{A Comprehensive Report on Learning from Different Domains}
+\author{Your Name}
+\date{\today}
+
+\begin{document}
+
+\maketitle
+\tableofcontents
+\section{A Theory of learning from different domains}
+
+\subsection{Introduction}
+% Expanded introduction, background on domain adaptation
+In this paper, we will be deviating a little bit from Unsipervised domain adaptation to \textbf{Supervised Domain Adaptation}. This is particularly important in scenarios where labeled data is scarce or expensive to obtain in the target domain, but abundant in the source domain. \\
+In many real-world applications, such as image recognition or natural language processing, the performance of machine learning models can degrade significantly when the training and testing data come from different distributions. This phenomenon is known as domain shift or covariate shift. To prevent this, domain adaptation seeks to transfer knowledge from the source to the target domain effectively which is usually done by \textbf{training on domain independent features of source dataset}. We will first try to get an uppetr bound over $H- divergence$ between the source and target domain. The $H- divergence$ is a measure of the difference between two probability distributions. Next we will \textbf{try to estimate an optimal value of $\alpha$ which is a parameter that controls the trade-off between the source and target domain errors}. The goal is to minimize the target error while ensuring that the model generalizes well to the target domain. We will also provide a theoretical analysis of the alpha-error bound, which quantifies the relationship between the source and target domain errors.
+
+\subsection{Problem Formulation}
+We formalize the problem of domain adaptation for binary classification as follows. A domain is defined as a pair consisting of a distribution $D$ over inputs $X$ and a labeling function $f : X \to [0,1]$, which can take fractional (expected) values when labeling occurs non-deterministically. Initially, we consider two domains: a source domain and a target domain. 
+
+We denote the source domain by $(D_S, f_S)$ and the target domain by $(D_T, f_T)$. A hypothesis is a function $h : X \to \{0,1\}$. The probability, according to the distribution $D_S$, that a hypothesis $h$ disagrees with a labeling function $f$ (which can also be a hypothesis) is defined as:
+\[
+\epsilon_S(h, f) = \mathbb{E}_{x \sim D_S} \big[ |h(x) - f(x)| \big].
+\]
+
+When referring to the source error (sometimes called risk) of a hypothesis, we use the shorthand:
+\[
+\epsilon_S(h) = \epsilon_S(h, f_S).
+\]
+
+\subsubsection{Notation and Definitions}
+\begin{definition}
+    Given a domain $X$ with distributions $D_1$ and $D_2$ over $X$, let $\mathcal{H}$ be a hypothesis class on $X$. For any hypothesis $h \in \mathcal{H}$, denote by $I(h)$ the set of points for which $h$ is the characteristic function, i.e., $x \in I(h) \iff h(x) = 1$. The $H$-divergence between $D_1$ and $D_2$ is defined as:
+    \[
+    d_{\mathcal{H}}(D_1, D_2) = 2 \sup_{h \in \mathcal{H}} \big| \Pr_{x \sim D_1}[x \in I(h)] - \Pr_{x \sim D_2}[x \in I(h)] \big|.
+    \]
+\end{definition}
+The advanteage of using $H$-divergence is that it is it is easy to estimate its upper bound in terms of some emperical values. Here are some lemmas that will help us in estimating the upper bound of $H$-divergence if our hypothesis class is of Finite VC dimension and is symmetric.\\
+\begin{lemma}
+Let $\mathcal{H}$ be a hypothesis space on $X$ with VC dimension $d$. If $U$ and $U'$ are samples of size $m$ from $D_1$ and $D_2$ respectively, and $\hat{d}_{\mathcal{H}}(U, U')$ is the empirical $H$-divergence between the samples, then for any $\delta \in (0,1)$, with probability at least $1 - \delta$, the following holds:
+\[
+d_{\mathcal{H}}(D_1, D_2) \leq \hat{d}_{\mathcal{H}}(U, U') + 4 \sqrt{\frac{d \log(2m) + \log\left(\frac{2}{\delta}\right)}{m}}.
+\]
+\end{lemma}
+This Lemma shows that the empirical H-divergence between two samples from distributions
+$D_1$ and $D_2$ converges uniformly to the true H-divergence for hypothesis classes $\mathcal{H}$ of finite VC dimension.
+\begin{lemma}
+For a symmetric hypothesis class $\mathcal{H}$ (one where for every $h \in \mathcal{H}$, the inverse hypothesis $1 - h$ is also in $\mathcal{H}$) and samples $U, U'$ of size $m$, the empirical $H$-divergence is given by:
+\[
+\hat{d}_{\mathcal{H}}(U, U') = 2 \left( 1 - \min_{h \in \mathcal{H}} \left[ \frac{1}{m} \sum_{x : h(x) = 0} \mathbb{I}[x \in U] + \frac{1}{m} \sum_{x : h(x) = 1} \mathbb{I}[x \in U'] \right] \right),
+\]
+where $\mathbb{I}[x \in U]$ is the binary indicator variable, which is $1$ when $x \in U$ and $0$ otherwise.
+\end{lemma}
+This lemma leads directly to a procedure for computing the H-divergence.
+
+\begin{definition}
+The ideal joint hypothesis is the hypothesis which minimizes the combined error:
+\[
+h^* = \arg\min_{h \in \mathcal{H}} \big(S(h) + T(h)\big).
+\]
+We denote the combined error of the ideal hypothesis by:
+\[
+\lambda = S(h^*) + T(h^*).
+\]
+\end{definition}
+This $\lambda$ we will be using in our analysis of the alpha-error bound.\\
+Now, let's define a term called \textbf{Symmetric Difference Hypothesis Space} which is a very crucial for our furthur analysis.\\
+\begin{definition}
+For a hypothesis space $\mathcal{H}$, the symmetric difference hypothesis space $\mathcal{H} \Delta \mathcal{H}$ is
+the set of hypotheses
+\[
+g \in \mathcal{H} \Delta \mathcal{H} \iff g(x) = h_1(x) \oplus h_2(x) \text{ for some } h_1, h_2 \in \mathcal{H},
+\]
+where $\oplus$ is the XOR function. In words, every hypothesis $g \in \mathcal{H} \Delta \mathcal{H}$ is the set of disagreements
+between two hypotheses in $\mathcal{H}$.
+\end{definition}
+
+The below lemma will give us an idea on how to incorporate this symmetric difference hypothesis space in our analysis.\\
+\begin{lemma}
+    For any hypotheses $h_1, h_2 \in \mathcal{H}$, the following inequality holds:
+    \[
+    | \epsilon_S(h_1, h_2) - \epsilon_T(h_1, h_2) | \leq \frac{1}{2} d_{\mathcal{H}\Delta \mathcal{H}}(D_S, D_T)
+    \]
+\end{lemma}
+\\ 
+Using above Lemma we can easily prove below Theorm: \\
+\textbf{Theorem 2} \textit{Let $\mathcal{H}$ be a hypothesis space of VC dimension $d$. If $\mathcal{U}_S, \mathcal{U}_T$ are unlabeled samples of size $m'$ each, drawn from $\mathcal{D}_S$ and $\mathcal{D}_T$ respectively, then for any $\delta \in (0, 1)$, with probability at least $1 - \delta$ (over the choice of the samples), for every $h \in \mathcal{H}$:}
+\[
+\epsilon_T(h) \leq \epsilon_S(h) + \frac{1}{2} \hat{d}_{\mathcal{H} \Delta \mathcal{H}}(\mathcal{U}_S, \mathcal{U}_T) + 4 \sqrt{\frac{2d \log(2m') + \log\left(\frac{2}{\delta}\right)}{m'}} + \lambda.
+\]
+
+Now, if we denote our loss as:
+\[
+\hat{\epsilon_\alpha}(h) = \alpha \hat{\epsilon_T}(h) + (1-\alpha) \hat{\epsilon_S}(h)
+\]
+where $\alpha \in [0,1]$
+ here we want to capture the $\alpha$ to be used in loss so that we get the Target loss as low as possible.
+ \\
+ Now we will see some important lemmas, to capture this optimal value of $\alpha$
+ \\ \\
+ \textbf{Lemma 4} \textit{Let $h$ be a hypothesis in class $\mathcal{H}$. Then}
+\[
+|\epsilon_\alpha(h) - \epsilon_T(h)| \leq (1 - \alpha) \left( \frac{1}{2} d_{\mathcal{H} \Delta \mathcal{H}}(\mathcal{D}_S, \mathcal{D}_T) + \lambda \right).
+\]
+\\
+The lemma shows that as $\alpha$ approaches 1, we rely increasingly on the target data, and the distance between domains matters less and less.
+
+\begin{lemma}[Lemma 5]
+For a fixed hypothesis $h$, if a random labeled sample of size $m$ is generated by drawing $\beta m$ points from $D_T$ and $(1 - \beta)m$ points from $D_S$, and labeling them according to $f_S$ and $f_T$ respectively, then for any $\delta \in (0,1)$, with probability at least $1 - \delta$ (over the choice of the samples),
+\[
+\Pr\left[|\hat{\varepsilon}_\alpha(h) - \varepsilon_\alpha(h)| \geq \epsilon \right] \leq 2 \exp\left(-2m\epsilon^2 \left/ \left( \frac{\alpha^2}{\beta} + \frac{(1 - \alpha)^2}{1 - \beta} \right) \right.\right).
+\]
+\end{lemma}
+
+It can easily be proved using Hoeffding’s inequality.
+
+\begin{proposition}[Hoeffding’s inequality]
+If $X_1, \ldots, X_n$ are independent random variables with $a_i \leq X_i \leq b_i$ for all $i$, then for any $\epsilon > 0$,
+\[
+\Pr\left[|\bar{X} - \mathbb{E}[\bar{X}]| \geq \epsilon\right] \leq 2 \exp\left(-\frac{2n^2\epsilon^2}{\sum_{i=1}^n (b_i - a_i)^2} \right),
+\]
+where $\bar{X} = \frac{1}{n} \sum_{i=1}^n X_i$.
+\end{proposition}
+ \\
+
+\begin{theorem}[Theorem 3]
+Let $\mathcal{H}$ be a hypothesis space of VC dimension $d$. Let $U_S$ and $U_T$ be unlabeled samples of size $m'$ from $D_S$ and $D_T$, respectively. Let $S$ be a labeled sample of size $m$, with $\beta m$ from $D_T$ and $(1 - \beta)m$ from $D_S$, labeled by $f_T$ and $f_S$, respectively.
+
+If $\hat{h} \in \mathcal{H}$ is the empirical minimizer of $\hat{\varepsilon}_\alpha(h)$ on $S$, and $h_T^* = \arg\min_{h \in \mathcal{H}} \varepsilon_T(h)$, then for any $\delta \in (0, 1)$, with probability at least $1 - \delta$:
+\begin{align*}
+\varepsilon_T(\hat{h}) \leq & \ \varepsilon_T(h_T^*) + 4 \sqrt{\frac{\alpha^2}{\beta} + \frac{(1 - \alpha)^2}{1 - \beta}} \cdot \sqrt{\frac{2d \log(2(m + 1)) + 2 \log(8 / \delta)}{m}} \\
+& + 2(1 - \alpha) \left( \frac{1}{2} \hat{d}_{\mathcal{H} \Delta \mathcal{H}}(U_S, U_T) + 4 \sqrt{\frac{2d \log(2m') + \log(8 / \delta)}{m'}} + \lambda \right).
+\end{align*}
+\end{theorem}
+
+It can be proved easily using last 3 lemmas.
+
+\subsection*{Optimal Mixing Value}
+
+Let us define:
+\[
+f(\alpha) = 2B \sqrt{\frac{\alpha^2}{\beta} + \frac{(1 - \alpha)^2}{1 - \beta}} + 2(1 - \alpha)A,
+\]
+where
+\[
+A = \frac{1}{2} \hat{d}_{\mathcal{H} \Delta \mathcal{H}}(U_S, U_T) + 4 \sqrt{\frac{2d \log(2m') + \log(4/\delta)}{m'}} + \lambda,
+\quad
+B = 4 \sqrt{\frac{2d \log(2(m + 1)) + 2 \log(8/\delta)}{m}}.
+\]
+
+Define $D = \sqrt{d}/A$. Then the optimal value $\alpha^*$ is:
+\[
+\alpha^*(m_T, m_S; D) = 
+\begin{cases}
+1 & \text{if } m_T \geq D^2, \\
+\min\{1, \nu\} & \text{otherwise},
+\end{cases}
+\]
+where
+\[
+\nu = \frac{m_T}{m_T + m_S} \left(1 + \frac{m_S}{\sqrt{D^2(m_S + m_T) - m_S m_T}}\right).
+\]
+
+\subsection*{Conclusion}
+In conclusion, This paper was just a theoretical introduction to supervised domain adaptation where we usually have labels for both source and target domains. So, while training we will be assigning some weight to loss of both domains and now our motive is to find the optimal value of that weight which will make sure lowest training set error. This weight in general depends on $\beta$, VC dimention and number of training points.
+
+
+\end{document}

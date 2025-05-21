@@ -10,6 +10,7 @@
 \usepackage{subcaption}
 \usepackage{caption}
 \usepackage{adjustbox}
+\usepackage{multirow}
 \usepackage{graphicx}
 % \usetheme{Madrid}
 % \usecolortheme{seahorse}
@@ -19,7 +20,8 @@
 \graphicspath{{./a/}}
 
 \title{Unsupervised Domain Adaptation}
-\author{}
+\author{Kintan Saha \hspace{} Pratham Gupta \\
+    Gavish Bansal \hspace{} Krishna Agarwal }
 \institute{Indian Institute of Science, Bangalore}
 \date{\today}
 
@@ -30,7 +32,7 @@
 
 \begin{frame}
     \frametitle{Project Motivation}
-    Our goal is to explore the field of \textbf{Unsupervised Domain Adaptation (UDA)} and Implement some of the state-of-the-art methods.\\
+    Our goal is to explore the field of \textbf{Unsupervised Domain Adaptation (UDA)} and implement some of the state-of-the-art methods.\\
     Flow of the presentation:
     \begin{itemize}
         \item Introduction to UDA
@@ -351,7 +353,119 @@ The structure of source and target distributions is shown below:
 \end{frame}
 
 
+
+\begin{frame}{\centering \large MNIST $\rightarrow$ MNIST-M: Top Feature Extractor Layer}
+\centering
+\begin{tabular}{cc}
+% Left Image
+\begin{minipage}{0.45\textwidth}
+    \centering
+    \includegraphics[width=\linewidth]{Source-only.png}
+    \captionof{figure}{Without DANN}
+\end{minipage}
+&
+% Right Image
+\begin{minipage}{0.45\textwidth}
+    \centering
+    \includegraphics[width=\linewidth]{DANN.png}
+    \captionof{figure}{With DANN}
+\end{minipage}
+\end{tabular}
+
+\vspace{0.3cm}
+
+\small
+\textbf{Figure:} t-SNE visualizations of extracted features. \textcolor{blue}{Blue} points: source domain (MNIST); \textcolor{red}{Red} points: target domain (MNIST-M). Adaptation aligns distributions better.
+\end{frame}
+
 \section{Survey of Other Methods of UDA}
+
+\begin{frame}
+    \frametitle{Domain Invariant Feature Learning}
+    \textbf{Key Idea:} The goal of domain invariant feature learning is to learn a representation that is invariant to the domain shift. Basically, aligning source and target domains by creating a domain invariant feature representation which follows the same distribution regardless of source and target.
+ 
+    \textbf{Algorithms Explored:}
+    \begin{itemize}
+    \item CORAL(Correlation Alignment) and DeepCORAL
+    \item MMD(Maximum Mean Discrepancy)
+    \item DSN(Domain Separation Networks)
+    \end{itemize}
+\end{frame}
+
+\subsection{CORAL and DeepCORAL}
+ 
+\begin{frame}
+\frametitle{CORAL}
+    \textbf{Key Idea:} CORAL aligns the second-order statistics of the source and target distributions. It minimizes the distance between the covariance matrices of the source and target features. This is done by transforming the source data to a new feature representation by finding a linear transformation $A$($\mathcal{D}_s \rightarrow \mathcal{D}_S A$).\\
+ 
+    \textbf{Mathematical Definition:}
+    \[
+        \mathcal{L}_{CORAL} = ||\widehat{C_S} - C_T||_F^2
+    \]
+    Where \(\widehat{C_S}\) and \(C_T\) are the covariance matrices of the transformed source($\mathcal{D}_SA$) and target($D_T$) features. We find an $A$ which minimises this CORAL loss.
+\end{frame}
+ 
+\begin{frame}
+    \frametitle{CORAL: Experiments}
+        Testing the CORAL method for basic robustness on randomly synthesised linearly separable data random as well as Gaussian datasets. We checked the accuracy for source and target domains for 2 scenerios in both the cases- same covariances and different covariances.\\
+ 
+        \begin{table}
+        \begin{tabular}{ccc}
+            \toprule
+            \textbf{Dataset Type} & \textbf{Covariance Condition} & \textbf{Accuracy (\%)} \\
+            \midrule
+            Univariate Random & Same Covariance & 100.0 \\
+            Univariate Random & Different Covariance & 100.0 \\
+            Multivariate Normal & Same Covariance & 95.80 \\
+            Multivariate Normal & Different Covariance & 87.39 \\
+            \bottomrule
+          \end{tabular}
+        \end{table}
+        The accuracies are averaged over 100 iterations of data generation, model training, and testing in each case in the table.
+    \end{frame}
+ 
+\begin{frame}
+    \frametitle{DeepCORAL}
+    \textbf{Key Idea:} DeepCORAL extends the CORAL method to deep neural networks. It uses a deep network to learn a feature representation that minimizes a linear combination of the CORAL loss and the classifier loss.
+ 
+    \begin{figure}[h]
+        \centering
+        \includegraphics[width=0.9\linewidth, height=0.3\textwidth]{images/DeepCORAL/DeepCORAL.png}
+        \caption{ Sample architecture on a CNN(AlexNet) with a classifier layer.}
+    \end{figure}
+    \begin{itemize}
+    \item $\mathcal{L}_{CORAL} = \frac{1}{4d^2}||\widehat{C_S} - C_T||_F^2$
+    \item Total Loss = $\mathcal{L}_{CORAL} + \sum_i\lambda_i\mathcal{L}_{CORAL}$
+    \end{itemize}
+\end{frame}
+ 
+\begin{frame}
+    \frametitle{DeepCORAL: Experiments}
+    \textbf{Dataset:} Office dataset: Amazon, DSLR, Webcam. A computer vision dataset capturing pictures of office objects under different conditions.
+    \begin{table}
+        \caption{Classification accuracy (source $\rightarrow$ target) of DeepCORAL on the Office computer vision dataset. A: Amazon, D: DSLR, W: Webcam.}
+        \label{comparePerformance2}
+        \begin{scriptsize}
+        \begin{center}
+        {\renewcommand{\arraystretch}{1.4}
+        \begin{tabular}{@{}l cccccc@{}}
+        \toprule
+        \multicolumn{1}{c}{\multirow{2}{*}{\textbf{Result Source}}} & \multicolumn{6}{c}{\textbf{Office (Amazon, DSLR, Webcam)}} \\
+        \cmidrule{2-7}
+         & \textbf{A $\rightarrow$ W} & \textbf{D $\rightarrow$ W} & \textbf{W $\rightarrow$ D} & \textbf{A $\rightarrow$ D} & \textbf{D $\rightarrow$ A} & \textbf{W $\rightarrow$ A} \\
+        \midrule
+        \textbf{Our Code} & 62.05 & 95.32 & 99.56 & 64.44 & 52.77 & 56.49\\
+        \hline
+        \textbf{Survey Paper} & 66.4$\pm$0.4 & 95.7$\pm$0.3 & 99.2$\pm$0.1 & 66.8$\pm$0.6 & 52.8$\pm$0.2 & 51.5$\pm$0.3\\
+        \bottomrule
+        \end{tabular}
+        }
+        \end{center}
+        \end{scriptsize}
+    \end{table}
+    We have compared the accuracies obtained in our experiments with those
+    mentioned in the survey paper.
+\end{frame}
 
 \subsection{Maximum Mean Discrepancy (MMD)}
 \begin{frame}
@@ -435,17 +549,6 @@ The structure of source and target distributions is shown below:
 
 \end{frame}
 
-\begin{frame}
-    \frametitle{MMD in UDA}
-    
-    \textbf{Applications in UDA:}
-    \begin{itemize}
-        \item Used to measure discrepancy between source and target feature distributions
-        \item Can be minimized during training to achieve domain-invariant features
-        \item Common in many deep learning UDA methods as a regularization term
-    \end{itemize}
-
-\end{frame}
 
 
 % \begin{frame}
@@ -659,5 +762,50 @@ The structure of source and target distributions is shown below:
 \end{frame}
 
 
+\begin{frame}{Contributions}
+\textbf{Pratham Gupta:}
+\begin{itemize}
+    \item Codes for MMD and ATT algorithms
+    \item Complete Main Section of Report
+    \item MMD and ATT in Appendix Section of Report
+    \item Presentation Slides of Introduction, DSN, MMD and ATT
+    \item Video Editing
+    \item Maintained Repository of the project
+    \item Worked on DANN Re-identification Code
+\end{itemize}
+
+\vspace{0.5em}
+\textbf{Gavish Bansal:}
+\begin{itemize}
+    \item Codes for Sentiment Analysis and Re-identification Code
+    \item Complete Appendix Section of DANN and Theory paper in Report
+    \item Prepared Presentation for DANN part
+\end{itemize}
+\end{frame}
+
+\begin{frame}{Contributions (contd.)}
+\textbf{Kintan Saha:}
+\begin{itemize}
+    \item Code for the inter-twined moons setup
+    \item Code for image classification experiments of the DANN paper
+    \item Writing the Appendix section for the DANN paper and the theory paper
+    \item Helping in preparing the presentation slides for the DANN part
+\end{itemize}
+
+\vspace{0.5em}
+\textbf{Krishna Agarwal:}
+\begin{itemize}
+\item Codes for CORAL, DeepCORAL, and DSN
+    \item Helped in writing sections of CORAL, DeepCORAL, and DSN in the main report
+    \item Writing the Appendix section for the Survey paper
+    \item Presentation slides for CORAL and DeepCORAL
+\end{itemize}
+\end{frame}
+
+\begin{frame}[c]
+\centering
+\Huge{\textbf{Thank You!}}\\[1em]
+\LARGE{Any Questions?}
+\end{frame}
 
 \end{document}
