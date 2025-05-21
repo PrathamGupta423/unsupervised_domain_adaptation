@@ -36,9 +36,6 @@ The `Experiments/` directory contains our implementation code and experimental r
 ## Contributing
 This is an course project for UMC-203 (AI and Machine Learning). For questions or collaborations, please open an issue or contact the repository maintainers.
 
-## License
-
-This project is licensed under the MIT License. See the LICENSE file for details.
 
 ## Authors
 
